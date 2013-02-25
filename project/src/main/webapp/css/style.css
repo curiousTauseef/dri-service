@@ -1,0 +1,26 @@
+table {
+	border-collapse: collapse;
+}
+
+th {
+	padding: 0 0.5em;
+	text-align: left;
+}
+
+tr th {
+	border-top: 1px solid #FB7A31;
+	border-bottom: 1px solid #FB7A31;
+	background: #FFC;
+}
+
+td {
+	vertical-align: top;
+	border-bottom: 1px solid #CCC;
+	padding: 0 0.5em;
+}
+
+
+td+td, th+th {
+	border-left: 1px solid #CCC;
+	text-align: center;
+}

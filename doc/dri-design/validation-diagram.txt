@@ -1,0 +1,29 @@
+title Data Validation Sequence Diagram
+
+participant DRIService as DRI
+participant ValidationStrategy as VS
+participant ValidationExecutor as VE
+participant MetadataAccess as MA
+participant FederatedDataAccess as FDA
+participant NotificationService as NS
+
+DRI->MA: getDataset(id)
+MA->DRI: dataset
+DRI->VE: validate(dataset)
+VE->MA: getLogicalData(dataset)
+MA->VE: Set<LogicalData>
+
+loop for each logicalData
+	loop for each logicalData's Data Source
+		VE->VS: validate(logicalData, dataSource)
+		VS->FDA: getValidationData(logicalData, dataSource)
+		FDA->VS: validationData
+		VS->VS: verifyLogicalData(dataset, logicalData, validationData)
+		alt logicalData retrievable, checksum valid
+			VS->VE: OKMessage
+		else logicalData unretrievable or checksum invalid
+   			VS->VE: dispatch_error_message(dataset, logicalData)
+   			VE->NS: dispatch_error_message(dataset, logicalData)
+		end
+	end
+end

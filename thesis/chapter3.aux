@@ -1,0 +1,91 @@
+\relax 
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}Data reliability and integrity service}{18}}
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{cha:architecture}{{3}{18}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}Overview}{18}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}Data and Compute Cloud Platform context}{18}}
+\newlabel{cloud-platform}{{3.2}{18}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Cloud Platform architecture and its relation to other project components\relax }}{19}}
+\newlabel{fig:vph-architecture}{{3.1}{19}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}Atmosphere Internal Registry}{19}}
+\newlabel{air}{{3.2.1}{19}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces Components and interactions of AIR component\relax }}{20}}
+\newlabel{fig:air-architecture}{{3.2}{20}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}Federated cloud storage}{20}}
+\newlabel{federated-cloud-storage}{{3.2.2}{20}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.3}Master UI}{21}}
+\newlabel{master-ui}{{3.2.3}{21}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.3}DRI data model}{21}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces Schematic representation of a\nobreakspace  {}VPH-Share Managed Dataset\relax }}{21}}
+\newlabel{fig:managed-dataset}{{3.3}{21}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.1}Metadata schema}{21}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces DRI metadata schema\relax }}{22}}
+\newlabel{fig:data-model}{{3.4}{22}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.2}Tagging datasets}{22}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.4}Requirements}{22}}
+\newlabel{requirements}{{3.4}{22}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.1}Functional}{23}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.2}Nonfunctional}{23}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.5}Architecture}{23}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.1}Overview}{24}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces DRI architecture overview\relax }}{24}}
+\newlabel{fig:dri-architecture}{{3.5}{24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.2}Interface and API}{24}}
+\newlabel{dri-interface}{{3.5.2}{24}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces DRI Service interface\relax }}{25}}
+\newlabel{fig:dri-interface}{{3.6}{25}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.3}Typical use cases execution flow}{26}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces DRI $validateManagedDataset()$ call sequence diagram\relax }}{26}}
+\newlabel{fig:validation-diagram}{{3.7}{26}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.8}{\ignorespaces DRI $assignDatasetToResource()$ call sequence diagram\relax }}{27}}
+\newlabel{fig:replication-diagram}{{3.8}{27}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.6}Data validation mechanism}{27}}
+\newlabel{section:validation-algorithm}{{3.6}{27}}
+\citation{por}
+\citation{pdp}
+\citation{dip}
+\citation{ric}
+\citation{dip}
+\citation{por}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.1}Algorithm description}{28}}
+\@writefile{loa}{\contentsline {algocf}{\numberline {1}{\ignorespaces Dataset validation algorithm\relax }}{28}}
+\newlabel{fig:setup}{{\caption@xref {fig:setup}{ on input line 532}}{29}}
+\newlabel{sub@fig:setup}{{}{29}}
+\newlabel{fig:validation}{{\caption@xref {fig:validation}{ on input line 538}}{29}}
+\newlabel{sub@fig:validation}{{a}{29}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.9}{\ignorespaces Single file validation heuristic consists of two phases: setup and validation. In setup phase (a), the file is divided into $n$ chunks and MAC hash is computed for every data chunk which is then stored in metadata registry. In validation phase (b), the file is again divided into $n$ chunks and pseudorandom number generator selects a set of $k$ out of $n$ chunk indexes that are downloaded, their checksums computed and compared with the original ones stored in metadata registry.\relax }}{29}}
+\newlabel{fig:algorithm-scheme}{{3.9}{29}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.2}Algorithm analysis}{30}}
+\@writefile{lot}{\contentsline {table}{\numberline {3.1}{\ignorespaces Performance metrics comparison between our and whole-file approaches\relax }}{30}}
+\newlabel{tab:metrics-comparison}{{3.1}{30}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.3}Comparison with other solutions}{30}}
+\@setckpt{chapter3}{
+\setcounter{page}{31}
+\setcounter{equation}{3}
+\setcounter{enumi}{2}
+\setcounter{enumii}{0}
+\setcounter{enumiii}{0}
+\setcounter{enumiv}{0}
+\setcounter{footnote}{0}
+\setcounter{mpfootnote}{0}
+\setcounter{part}{0}
+\setcounter{chapter}{3}
+\setcounter{section}{6}
+\setcounter{subsection}{3}
+\setcounter{subsubsection}{0}
+\setcounter{paragraph}{0}
+\setcounter{subparagraph}{0}
+\setcounter{figure}{9}
+\setcounter{table}{1}
+\setcounter{lofdepth}{1}
+\setcounter{lotdepth}{1}
+\setcounter{lstnumber}{1}
+\setcounter{AlgoLine}{14}
+\setcounter{algocfline}{1}
+\setcounter{algocf}{1}
+\setcounter{ContinuedFloat}{0}
+\setcounter{subfigure}{2}
+\setcounter{subtable}{0}
+\setcounter{lstlisting}{0}
+}

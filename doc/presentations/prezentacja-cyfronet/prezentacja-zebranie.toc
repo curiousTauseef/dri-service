@@ -1,0 +1,19 @@
+\beamer@endinputifotherversion {3.10pt}
+\select@language {polish}
+\beamer@sectionintoc {1}{Background}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Objectives}{3}{0}{1}
+\beamer@subsectionintoc {1}{2}{Motivation}{4}{0}{1}
+\beamer@sectionintoc {2}{Design}{5}{0}{2}
+\beamer@subsectionintoc {2}{1}{VPH-Share}{5}{0}{2}
+\beamer@subsectionintoc {2}{2}{Architecture}{7}{0}{2}
+\beamer@sectionintoc {3}{Validation}{9}{0}{3}
+\beamer@subsectionintoc {3}{1}{Cloud storage}{9}{0}{3}
+\beamer@subsectionintoc {3}{2}{Algorithm}{10}{0}{3}
+\beamer@subsectionintoc {3}{3}{Technologies}{12}{0}{3}
+\beamer@subsectionintoc {3}{4}{Efficiency}{13}{0}{3}
+\beamer@sectionintoc {4}{Approaches}{14}{0}{4}
+\beamer@subsectionintoc {4}{1}{Classic}{14}{0}{4}
+\beamer@subsectionintoc {4}{2}{PoR}{15}{0}{4}
+\beamer@subsectionintoc {4}{3}{DIP}{16}{0}{4}
+\beamer@subsectionintoc {4}{4}{Solution}{17}{0}{4}
+\beamer@sectionintoc {5}{Conclusions}{18}{0}{5}

@@ -1,0 +1,32 @@
+MD5 Digest:e8ae74ade79244a5c801ed91d1e16db7
+Using byte array (size 128): 379 milliseconds
+
+MD5 Digest:e8ae74ade79244a5c801ed91d1e16db7
+Using byte array (size 256): 126 milliseconds
+
+MD5 Digest:e8ae74ade79244a5c801ed91d1e16db7
+Using byte array (size 512): 90 milliseconds
+
+MD5 Digest:e8ae74ade79244a5c801ed91d1e16db7
+Using byte array (size 1024): 64 milliseconds
+
+MD5 Digest:e8ae74ade79244a5c801ed91d1e16db7
+Using byte array (size 2048): 56 milliseconds
+
+MD5 Digest:e8ae74ade79244a5c801ed91d1e16db7
+Using byte array (size 4096): 55 milliseconds
+
+MD5 Digest:e8ae74ade79244a5c801ed91d1e16db7
+Using byte array (size 8192): 52 milliseconds
+
+MD5 Digest:e8ae74ade79244a5c801ed91d1e16db7
+Using byte array (size 16384): 53 milliseconds
+
+MD5 Digest:e8ae74ade79244a5c801ed91d1e16db7
+Using byte array (size 32768): 52 milliseconds
+
+MD5 Digest:e8ae74ade79244a5c801ed91d1e16db7
+Using byte array (size 65536): 51 milliseconds
+
+MD5 Digest:e8ae74ade79244a5c801ed91d1e16db7
+One byte at a time: 9228 milliseconds

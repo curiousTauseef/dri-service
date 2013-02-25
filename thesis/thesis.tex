@@ -1,0 +1,118 @@
+% \documentclass[pdflatex,11pt]{aghdpl}
+% \documentclass{aghdpl}               % przy kompilacji programem latex
+\documentclass[pdflatex,en]{aghdpl}  % praca w języku angielskim
+% \usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+
+% dodatkowe pakiety
+\usepackage{enumerate}
+\usepackage{listings}
+\usepackage[lined,boxed,commentsnumbered]{algorithm2e}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\lstloadlanguages{TeX}
+
+% for \url command
+\usepackage{url}
+
+\lstset{
+  literate={ą}{{\k{a}}}1
+           {ć}{{\'c}}1
+           {ę}{{\k{e}}}1
+           {ó}{{\'o}}1
+           {ń}{{\'n}}1
+           {ł}{{\l{}}}1
+           {ś}{{\'s}}1
+           {ź}{{\'z}}1
+           {ż}{{\.z}}1
+           {Ą}{{\k{A}}}1
+           {Ć}{{\'C}}1
+           {Ę}{{\k{E}}}1
+           {Ó}{{\'O}}1
+           {Ń}{{\'N}}1
+           {Ł}{{\L{}}}1
+           {Ś}{{\'S}}1
+           {Ź}{{\'Z}}1
+           {Ż}{{\.Z}}1
+}
+
+%---------------------------------------------------------------------------
+
+\author{Krzysztof Styrc}
+\shortauthor{K. Styrc}
+
+\titlePL{Zarządzanie wiarygodnością i integralnością danych w sfederowanych zasobach cloud storage}
+\titleEN{Managing data reliability and integrity in federated cloud storage}
+
+\shorttitlePL{Zarządzanie wiarygodnością i integralnością danych w sfederowanych zasobach cloud storage} % skrócona wersja tytułu jeśli jest bardzo długi
+\shorttitleEN{Managing data reliability and integrity in federated cloud storage}
+
+\thesistypePL{Praca magisterska}
+\thesistypeEN{Master of Science Thesis}
+
+\supervisorPL{dr inż. Marian Bubak}
+\supervisorEN{Marian Bubak Ph.D}
+
+\consultancyPL{Piotr Nowakowski}
+\consultancyEN{Piotr Nowakowski}
+
+\date{2012}
+
+\departmentPL{Katedra Informatyki}
+\departmentEN{Department of Computer Science}
+
+\facultyPL{Wydział Elektrotechniki, Automatyki, Informatyki i Elektroniki}
+\facultyEN{Faculty of Electrical Engineering, Automatics, Computer Science and Electronics}
+
+\acknowledgements{Tu będą podziękowania}
+
+
+
+\setlength{\cftsecnumwidth}{10mm}
+
+%---------------------------------------------------------------------------
+
+\begin{document}
+
+\titlepages
+
+\tableofcontents
+\clearpage
+
+\include{chapter1}
+\include{chapter2}
+\include{chapter3}
+\include{chapter4}
+\include{chapter5}
+\include{chapter6}
+
+% itd.
+% \appendix
+% \include{dodatekA}
+% \include{dodatekB}
+% itd.
+
+\bibliographystyle{plainurl}
+\bibliography{biblio}
+%\begin{thebibliography}{1}
+%
+%\bibitem{Dil00}
+%A.~Diller.
+%\newblock {\em LaTeX wiersz po wierszu}.
+%\newblock Wydawnictwo Helion, Gliwice, 2000.
+%
+%\bibitem{Lam92}
+%L.~Lamport.
+%\newblock {\em LaTeX system przygotowywania dokumentów}.
+%\newblock Wydawnictwo Ariel, Krakow, 1992.
+%
+%\bibitem{Alvis2011}
+%M.~Szpyrka.
+%\newblock {\em {On Line Alvis Manual}}.
+%\newblock AGH University of Science and Technology, 2011.cccccc
+%\newblock \\\texttt{http://fm.ia.agh.edu.pl/alvis:manual}.
+%
+%\end{thebibliography}
+
+\end{document}

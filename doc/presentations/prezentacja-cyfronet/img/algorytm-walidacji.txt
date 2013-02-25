@@ -1,0 +1,13 @@
+function validate_dataset(dataset id) {
+	dataset = get_dataset_metadata(id);
+	files = get_dataset_files(dataset);
+	foreach file in files {
+		foreach data_source in dataset.get_data_sources() {
+			data = get_validation_data(file, data_source);
+			if data == null // unable to retrieve data
+				dispatch_error_message(file, data_source);
+			if !is_valid(data, file, dataset)
+				dispatch_error_message(file, data_source);
+		}
+	}
+}

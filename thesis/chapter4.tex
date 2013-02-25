@@ -1,0 +1,155 @@
+\chapter{DRI implementation}
+\label{cha:implementation}
+In the previous chapter, DRI Service architecture was described. In the
+following, we present the way how DRI Service went through from design into
+implementation. We discuss technology limitations and other compromises that
+had to be taken into account.
+
+	\section{Overview}
+Implementation of a large software system typically involves some set of
+technological or paradigmatic assumptions that have to be taken into
+consideration while implementing its components. VPH-Share Cloud Platform takes
+advantage of SOA paradigm. All of the components are designed as separate web
+services and cooperate via REST interfaces. As a~result, each component may
+theoretically be implemented using any technology stack. However, to avoid
+excessive diversity of software technologies, most of them are implemented in
+Java or Ruby programming languages, the practically proven open source
+solutions.\\
+
+As it was mentioned in section \ref{cloud-platform}, all of the Cloud
+Platform's core services will be deployed within Atomic Service instances,
+a VPH-Share application container. Atomic Service can be simply viewed as VM
+with add-on software and mechanism installed, such as security or federated
+data access layers.\\
+
+DRI Service implementation was conducted according to the architecture
+described in chapter \ref{cha:architecture} with the best software development
+practices, such as testing and design patterns in mind. The main goal is to
+achieve the highest possible data validation efficiency, while providing an
+acceptable probability of unavailability or error detection. The design of DRI
+Service already solved some performance issues, mostly on the validation
+algorithm. However, implementation details have to be taken into account.
+	
+	\section{Diagram overview and implementation decisions}
+Ideally, project's implementation should accurately reflect its design.
+However, selected technology stack significantly affects this desire. One
+programming languages express object oriented paradigm differently than
+others, the REST/HTTP communication is handled in other ways or various
+programming platforms have just developed its own best practices and design
+patterns. All these dissimilarities can cause changes to the original design.
+That is the reason, why the architecture presented in chapter
+\ref{cha:architecture} represents only the conceptual and functional view of
+DRI component.
+
+	\section{Implementation technologies}
+The Java programming language \cite{java-language} was chosen as implementation
+language and 
+technology stack, mainly due to its high-performance, wealth of available
+libraries and productivity as well as being commercially proven in many
+applications. At its core, DRI Service is a Java Servlet \cite{java-servlet}
+component which accepts REST requests on specified URI paths and performs the
+requested task utilizing MetadataAccess, ValidationExecutor, 
+ReplicationExecutor, ValidationStrategy and FederatedDataAccess, implemented as
+simple Java objects. In Java Servlet model, the programmer is free of the
+object's lifecycle management and REST/HTTP communication complexities, which
+is provided by the container into which application is deployed.\\
+
+Another important implementation's aspect is dependency injection (DI). It is
+a~software design pattern which releases the programmer from "dependency-hell"
+problem. It removes the need to provide dependencies (object instances) when
+constructing objects, which is error-prone. Dependencies are provided
+dynamically by the DI container at runtime according to the configuration.
+In DRI, we use Guice library \cite{guice} for DI capabilities. DI approach
+significantly simplifies component's testing in a service-based environment as
+dependable service can be simply swapped with a~mock object in the
+configuration.\\
+ 
+		\subsection{REST interfaces}
+To provide REST interface and cooperate with other Cloud Platform
+components, DRI utilizes Jersey library \cite{jersey} -- a reference
+implementation of the JAX-RS specification \cite{jax-rs} and supports seamless
+integration with Java Servlet technology. It provides both, server and client
+REST interoperability via Java annotations. In the server case, the selected
+method is annotated to respond to the chosen HTTP request type (GET, POST,
+DELETE, HEAD, \ldots) on specified URI path, producing or consuming various
+parameters mostly in JSON format. In the client case, it only requires to
+specify REST resource's URI path as well as input and output parameter types.
+As a result, REST interoperability is simplified to the minimum.\\
+
+OBRAZEK DRI JAKO SERVLET!!!!
+
+		\subsection{Cloud storage access}
+Current cloud storage services mostly provide a~standard REST interface.
+Despite interface similarities, it appears cumbersome to support the
+differences between providers. To get rid of this problem, DRI uses JClouds
+\cite{jclouds} library that provides a~common API layer that abstracts cloud
+dissimilarities. Thus, access to the cloud storage federation is quite easy
+via programmer perspective. At the time of writing this thesis, JClouds
+supports up to 30 different cloud providers including Amazon, GoGrid, vCloud,
+Openstack, Azure and others. Storage access is provided as Blobstore API, which
+incorporates three concepts: service, container and blob. The Blobstore is
+a~key-value store such as Amazon S3, where your account exists and where you
+can create containers. A container is a namespace for you data and many of them
+can exist. Blob is an unstructued data stored in a container referenced by
+its name. In all cloud storages, the combination of the account, container and
+blob relates directly to the HTTP URL. Access to data can be performed
+synchronously or asynchronously, depending on the selected Blobstore type.
+While Blobstore API provides cloud storage abstraction it cannot overcome
+specific cloud provider's limitations, for example size limits or timeouts
+between sensitive operations.\\
+
+OBRAZEK FederatedDataAccess z wykorzystaniem JClouds!!!!
+
+		\subsection{Request and periodic task scheduling}
+DRI Service periodically monitors data integrity. Periodic tasks invocation
+is a~recurring issue in many IT systems. DRI uses Quartz library \cite{quartz}
+for task scheduling. Quartz is a~full-featured open source job scheduling
+service that can be integrated with, or used along side virtually any Java
+application -- from the smallest to the largest e-commerce system. Its design
+is scalable, as it can be used to create simple and complex schedules for
+executing tens, hundreds or even ten-of-thousands of jobs. DRI Service uses
+Quartz in the following way: it firstly schedules one periodic job within
+specified period, which upon execution retrieves all managed datasets' metadata
+from AIR registry and schedules that many single-execution jobs -- one for each
+dataset. Apart from periodic validation, the dataset's integrity check can be
+performed on request. In such case, DRI Service tries to add validation job for
+the specified dataset to the schedule. If a~job with the same dataset id
+already exists in the queue, nothing happens. Otherwise, the job with specified
+dataset id is added to the schedule. Worth mentioning is the fact, that apart
+from validation jobs, there are jobs that update dataset checksums whenever its
+contents changed and both of them cannot collide with each other.\\
+
+OBRAZEK OGÓLNY, PREZENTUJĄCY DZIAŁANIE SCHEDULERA!!!!
+
+	\section{Validation heuristic implementation}
+DRI Service utilizes efficient data validation algorithm to achieve acceptable
+performance over large amount of data. However, apart from algorithm
+efficiency, its optimized implementation is greatly desirable. Due to the fact
+that the validation algorithm is highly oriented on network communication (see
+section \ref{section:validation-algorithm}), network bandwidth and latency are
+the most significant factors affecting its performance. The point of the
+biggest interest is access to large number of the selected chunks of data. As
+it was noted in section \ref{cloud-model}, current cloud storage interfaces do
+not enable efficient way to perform this operation. However, even though
+individual chunks of data have to be requested in separate HTTP calls, they can
+be invoked asynchronously in parallel to reduce round-trip time (RTT) latency.
+DRI employs this scheme via asynchronous Blobstore API provided by JClouds
+library. When DRI validates single logical data within dataset, it invokes
+a~configurable number of asychronous data chunks requests and then waits for
+their completion. The scheme repeats until all the needed chunks for logical
+data are collected.\\
+
+OBRAZEK ASYNCHRONOUS CALLS TO CLOUD PROVIDER!!!!  
+
+	\section{Deployment environment}
+Currently, at proof of concept stage, the DRI is deployed on Apache Tomcat
+\cite{apache-tomcat} instance which runs on virtual machine (VM). However, in
+full-operational Cloud Platform it will be deployed within Atomic Service
+instance (simply a VM with some add-ons) as one of its core services. Apache
+Tomcat is a web application container which implements Java Servlet
+specification and provides its application environment. Nevertheless, any other
+application server compliant with Java Servlet specification can be used.
+
+	\section{The use outside of Cloud Platform}
+
+	\section{Conclusions}

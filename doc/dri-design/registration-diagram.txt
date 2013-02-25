@@ -1,0 +1,17 @@
+participant DRIServiceImpl as DRI
+participant RegistryAccessObject as RAO
+participant ValidatonScheduler as VS
+
+DRI->DRI: markDatasetForManagement(dataset)
+
+alt dataset exist
+	DRI->RAO: updateDataset(dataset)
+else dataset don't exist
+	DRI->RAO: createDataset(dataset)
+	RAO->DRI: id
+end
+
+DRI->RAO: getManagementPolicy(id)
+RAO->DRI: managementPolicy
+
+DRI->VS: schedule(id, managementPolicy)
