@@ -2,46 +2,20 @@ package vphshare.driservice.domain;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.apache.commons.collections.Predicate;
-import org.codehaus.jackson.annotate.JsonProperty;
 
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+
 public class LogicalData {
 
-	@JsonProperty("_id")
 	private String id;
-
-	@JsonProperty("identifier")
-	private String identifier;
-	
-	@JsonProperty("data_set_name")
-	private String datasetName;
-
-	@JsonProperty("size")
+	private String name;
+	private String path;
 	private long size;
 
-	@JsonProperty("checksum")
 	private String checksum;
-
-	@JsonProperty("last_accessed")
-	private String lastAccessed;
-
-	@JsonProperty("last_modified")
-	private String lastModified;
-
-	@JsonProperty("dri_checksum")
-	private String driChecksum;
-
-	@JsonProperty("dri_checksum_update_time")
-	private String driChecksumUpdateTime;
+	private String lastValidationDate;
 	
-	@JsonProperty("data_source_ids")
-	private List<String> dataSources;
+	private List<DataSource> dataSources;
 
 	public LogicalData() {
 	}
@@ -57,21 +31,21 @@ public class LogicalData {
 	public void setId(String id) {
 		this.id = id;
 	}
-
-	public String getIdentifier() {
-		return identifier;
+	
+	public String getName() {
+		return name;
 	}
 
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getDatasetName() {
-		return datasetName;
+	public String getPath() {
+		return path;
 	}
 
-	public void setDatasetName(String datasetName) {
-		this.datasetName = datasetName;
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	public long getSize() {
@@ -90,43 +64,19 @@ public class LogicalData {
 		this.checksum = checksum;
 	}
 
-	public String getLastAccessed() {
-		return lastAccessed;
+	public String getLastValidationDate() {
+		return lastValidationDate;
 	}
 
-	public void setLastAccessed(String lastAccessed) {
-		this.lastAccessed = lastAccessed;
+	public void setLastValidationDate(String lastValidationDate) {
+		this.lastValidationDate = lastValidationDate;
 	}
 
-	public String getLastModified() {
-		return lastModified;
-	}
-
-	public void setLastModified(String lastModified) {
-		this.lastModified = lastModified;
-	}
-
-	public String getDriChecksum() {
-		return driChecksum;
-	}
-
-	public void setDriChecksum(String driChecksum) {
-		this.driChecksum = driChecksum;
-	}
-
-	public String getDriChecksumUpdateTime() {
-		return driChecksumUpdateTime;
-	}
-
-	public void setDriChecksumUpdateTime(String checksumUpdateTime) {
-		this.driChecksumUpdateTime = checksumUpdateTime;
-	}
-
-	public List<String> getDataSources() {
+	public List<DataSource> getDataSources() {
 		return dataSources;
 	}
 
-	public void setDataSources(List<String> dataSources) {
+	public void setDataSources(List<DataSource> dataSources) {
 		this.dataSources = dataSources;
 	}
 
@@ -158,13 +108,13 @@ public class LogicalData {
 		return true;
 	}
 	
-	public static Predicate getPredicate(final String itemIDorIdentifier) {
+	public static Predicate getPredicate(final String idOrName) {
 		return new Predicate() {
 			
 			@Override
 			public boolean evaluate(Object object) {
 				LogicalData item = (LogicalData) object;
-				return item.getId().equals(itemIDorIdentifier) || item.getIdentifier().equals(itemIDorIdentifier);
+				return item.getId().equals(idOrName) || item.getName().equals(idOrName);
 
 			}
 		};

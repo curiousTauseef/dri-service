@@ -105,7 +105,7 @@ public class PerformanceTest {
 							
 							StringBuilder text = new StringBuilder();
 							text.append("Ready to make performance test with the following parameters:\n");
-							text.append("Data source: " + ds.getUrl() + "\n");
+							text.append("Data source: " + ds.getResourceUrl() + "\n");
 							text.append("Dataset: " + dataset.getName() + "\n");
 							text.append("N = " + n + "\n");
 							text.append("K = " + k + "\n");

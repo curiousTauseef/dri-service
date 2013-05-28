@@ -8,6 +8,7 @@ import org.apache.commons.io.input.AutoCloseInputStream;
 import org.jclouds.blobstore.AsyncBlobStore;
 import org.jclouds.blobstore.domain.Blob;
 
+import vphshare.driservice.domain.DataSource;
 import vphshare.driservice.domain.LogicalData;
 import vphshare.driservice.domain.ManagedDataset;
 import vphshare.driservice.exceptions.InvalidConfigurationException;
@@ -16,7 +17,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 public class BlobstoreHelper {
 
-	public static ListenableFuture<Blob> getKthChunk(ManagedDataset dataset, LogicalData item, AsyncBlobStore blobstore, int k, int chunks) {
+	public static ListenableFuture<Blob> getKthChunk(ManagedDataset dataset, LogicalData item, DataSource ds, AsyncBlobStore blobstore, int k, int chunks) {
 		long chunkSize = item.getSize() / chunks;
 		long start = k * chunkSize;
 		long end = (k+1) * chunkSize - 1;
@@ -27,7 +28,7 @@ public class BlobstoreHelper {
 					"Threshold should be >= N");
 		}
 	
-		return blobstore.getBlob(dataset.getName(), item.getIdentifier(), range(start, end));
+		return blobstore.getBlob(ds.getContainer(), ds.getName(), range(start, end));
 	}
 	
 	public static InputStream getInputStream(Blob blob) {

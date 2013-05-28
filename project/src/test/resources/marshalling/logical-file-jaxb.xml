@@ -1,0 +1,34 @@
+<logicalDataWrapped>
+	<logicalData>
+		<checksum>0</checksum>
+		<contentTypes>text/plain</contentTypes>
+		<contentTypesAsString>text/plain</contentTypesAsString>
+		<createDate>1367964000000</createDate>
+		<lastValidationDate>0</lastValidationDate>
+		<length>3</length>
+		<lockTimeout>0</lockTimeout>
+		<modifiedDate>1367964000000</modifiedDate>
+		<name>1.txt</name>
+		<owner>marek</owner>
+		<parentRef>1</parentRef>
+		<pdriGroupId>144</pdriGroupId>
+		<supervised>false</supervised>
+		<type>logical.file</type>
+		<uid>206</uid>
+	</logicalData>
+	<path>/1.txt</path>
+	<pdriList>
+		<name>b004414f-2e70-4b43-9026-1eabf0d28592-1.txt</name>
+		<password>somepass</password>
+		<resourceUrl>swift://example.org/rest/auth</resourceUrl>
+		<username>test:test</username>
+	</pdriList>
+	<permissions>
+		<owner>marek</owner>
+		<read>other</read>
+		<read>admin</read>
+		<read>developer</read>
+		<read>cloudadmin</read>
+		<read>marek</read>
+	</permissions>
+</logicalDataWrapped>

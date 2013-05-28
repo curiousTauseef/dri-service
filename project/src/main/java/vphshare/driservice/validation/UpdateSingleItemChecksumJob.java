@@ -38,7 +38,7 @@ public class UpdateSingleItemChecksumJob implements Job {
 	}
 
 	private void doTheTask(ManagedDataset dataset, LogicalData item) {
-		LOG.log(INFO, "Updating checksum job for item " + dataset.getName() + ":" + item.getIdentifier());
+		LOG.log(INFO, "Updating checksum job for item " + dataset.getName() + ":" + item.getName());
 		try {
 			long start = System.currentTimeMillis();
 			DatasetReport report = strategy.computeChecksum(dataset, item);
@@ -50,7 +50,7 @@ public class UpdateSingleItemChecksumJob implements Job {
 			
 		} catch (Exception e) {
 			LOG.log(SEVERE, "Unexpected exception thrown while updating checksum of item " 
-					+ dataset.getName() + ":" + item.getIdentifier(), e);
+					+ dataset.getName() + ":" + item.getName(), e);
 			notificationService.notifyProcessingException(dataset, e);
 		}
 	}

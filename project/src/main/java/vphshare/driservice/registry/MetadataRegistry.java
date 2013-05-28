@@ -5,10 +5,11 @@ import java.util.List;
 import vphshare.driservice.domain.LogicalData;
 import vphshare.driservice.domain.ManagedDataset;
 import vphshare.driservice.registry.AIRMetadataRegistry.DatasetCategory;
+import vphshare.driservice.registry.lobcder.LobcderMetadataRegistry;
 
 import com.google.inject.ImplementedBy;
 
-@ImplementedBy(AIRMetadataRegistry.class)
+@ImplementedBy(LobcderMetadataRegistry.class)
 public interface MetadataRegistry {
 
 	List<ManagedDataset> getDatasets(DatasetCategory category);

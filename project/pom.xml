@@ -39,6 +39,7 @@
 	<jersey-version>1.11</jersey-version>
 	<jclouds-version>1.4.0</jclouds-version>
 	<guice-version>3.0</guice-version>
+	<embed-tomcat-version>7.0.40</embed-tomcat-version>
 </properties>
 
 <repositories>
@@ -51,6 +52,16 @@
 </repositories>
 
 <dependencies>
+	<dependency>
+		<groupId>com.google.inject</groupId>
+		<artifactId>guice</artifactId>
+		<version>${guice-version}</version>
+	</dependency>
+	<dependency>
+		<groupId>com.google.inject.extensions</groupId>
+		<artifactId>guice-servlet</artifactId>
+		<version>${guice-version}</version>
+	</dependency>
 	<dependency>
 		<groupId>javax.inject</groupId>
 		<artifactId>javax.inject</artifactId>
@@ -162,6 +173,32 @@
 		<artifactId>junit</artifactId>
 		<version>4.10</version>
 		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.mockito</groupId>
+		<artifactId>mockito-all</artifactId>
+		<version>1.9.5</version>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.tomcat.embed</groupId>
+		<artifactId>tomcat-embed-core</artifactId>
+		<version>${embed-tomcat-version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.tomcat.embed</groupId>
+		<artifactId>tomcat-embed-logging-juli</artifactId>
+		<version>${embed-tomcat-version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.tomcat.embed</groupId>
+		<artifactId>tomcat-embed-jasper</artifactId>
+		<version>${embed-tomcat-version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.tomcat.embed</groupId>
+		<artifactId>tomcat-embed-logging-log4j</artifactId>
+		<version>${embed-tomcat-version}</version>
 	</dependency>
 </dependencies>
 

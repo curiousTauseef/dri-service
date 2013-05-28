@@ -3,3 +3,6 @@
 .classpath
 target
 *.aux
+config.properties
+doc/*.txt
+doc/*.mpeg

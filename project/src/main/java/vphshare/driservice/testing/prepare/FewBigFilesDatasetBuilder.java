@@ -27,9 +27,6 @@ public class FewBigFilesDatasetBuilder implements DatasetGenericBuilder {
 			BlobStore blobstore = context.getBlobStore();
 			
 			ManagedDataset dataset = new ManagedDataset("1", "few-big-files-dataset");
-			List<DataSource> dsList = new ArrayList<DataSource>();
-			dsList.add(ds);
-			dataset.setDataSources(dsList);
 	
 			blobstore.createContainerInLocation(null, dataset.getName());
 			registry.addDataset(dataset);
@@ -39,8 +36,11 @@ public class FewBigFilesDatasetBuilder implements DatasetGenericBuilder {
 	
 			for (int i = 0; i < numberOfFiles; i++) {
 				LogicalData item = new LogicalData("" + i);
-				item.setIdentifier("item" + i);
+				item.setName("item" + i);
 				item.setSize(payload.length);
+				List<DataSource> dsList = new ArrayList<DataSource>();
+				dsList.add(ds);
+				item.setDataSources(dsList);
 				Blob blob = blobstore.blobBuilder("item" + i).payload(payload).build();
 				blobstore.putBlob(dataset.getName(), blob);
 				datas.add(item);

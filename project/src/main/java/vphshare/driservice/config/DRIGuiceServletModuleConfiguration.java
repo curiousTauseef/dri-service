@@ -24,12 +24,13 @@ import vphshare.driservice.aop.DRIServiceExceptionHandler;
 import vphshare.driservice.aop.MetadataRegistryExceptionHandler;
 import vphshare.driservice.providers.AIRConfigurationProvider;
 import vphshare.driservice.providers.ExecutorProvider;
+import vphshare.driservice.providers.LobcderConfigurationProvider;
 import vphshare.driservice.providers.PropertiesProvider;
 import vphshare.driservice.registry.AIRMetadataRegistry;
 import vphshare.driservice.scheduler.InjectingJobFactory;
 import vphshare.driservice.scheduler.PeriodicScheduler;
 import vphshare.driservice.service.DRIServiceImpl;
-import vphshare.driservice.validation.CustomValidationStrategy;
+import vphshare.driservice.validation.DefaultValidationStrategy;
 import vphshare.driservice.validation.ValidationStrategy;
 
 import com.google.inject.AbstractModule;
@@ -52,7 +53,7 @@ public class DRIGuiceServletModuleConfiguration extends JerseyServletModule {
 			@Override
 			protected void configure() {
 				bind(DRIServiceImpl.class);
-				bind(ValidationStrategy.class).to(CustomValidationStrategy.class);
+				bind(ValidationStrategy.class).to(DefaultValidationStrategy.class);
 				
 				// Properties bindings
 				bindProperties(binder(), PropertiesProvider.getProperties());
@@ -62,6 +63,9 @@ public class DRIGuiceServletModuleConfiguration extends JerseyServletModule {
 				bind(WebResource.class)
 					.annotatedWith(named("air-config"))
 					.toProvider(AIRConfigurationProvider.class);
+				bind(WebResource.class)
+					.annotatedWith(named("lobcder-config"))
+					.toProvider(LobcderConfigurationProvider.class);
 				
 				// run on startup quartz scheduler bindings
 				bind(SchedulerFactory.class).to(StdSchedulerFactory.class).in(SINGLETON);

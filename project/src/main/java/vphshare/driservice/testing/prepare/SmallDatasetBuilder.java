@@ -24,9 +24,6 @@ public class SmallDatasetBuilder implements DatasetGenericBuilder {
 			BlobStore blobstore = context.getBlobStore();
 			
 			ManagedDataset dataset = new ManagedDataset("1", "small-dataset");
-			List<DataSource> dsList = new ArrayList<DataSource>();
-			dsList.add(ds);
-			dataset.setDataSources(dsList);
 	
 			blobstore.createContainerInLocation(null, dataset.getName());
 			registry.addDataset(dataset);
@@ -36,7 +33,10 @@ public class SmallDatasetBuilder implements DatasetGenericBuilder {
 	
 			for (int i = 0; i < 10; i++) {
 				LogicalData item = new LogicalData("" + i);
-				item.setIdentifier("item" + i);
+				item.setName("item" + i);
+				List<DataSource> dsList = new ArrayList<DataSource>();
+				dsList.add(ds);
+				item.setDataSources(dsList);
 				item.setSize(payload.length);
 				Blob blob = blobstore.blobBuilder("item" + i).payload(payload).build();
 				blobstore.putBlob(dataset.getName(), blob);

@@ -31,8 +31,9 @@ public class RealWorldDataDatasetBuilder implements DatasetGenericBuilder {
 			
 			String datasetID = "LOBCDER-REPLICA";
 			if (!blobstore.containerExists(datasetID))
-				throw new ResourceNotFoundException("Dataset " + datasetID + "is not present on the data source" + ds.getUrl());
+				throw new ResourceNotFoundException("Dataset " + datasetID + "is not present on the data source" + ds.getResourceUrl());
 			
+			@SuppressWarnings("unchecked")
 			PageSet<StorageMetadata> itemMetadatas = (PageSet<StorageMetadata>) blobstore.list(datasetID);
 			List<LogicalData> datas = new ArrayList<LogicalData>();
 			
@@ -41,17 +42,17 @@ public class RealWorldDataDatasetBuilder implements DatasetGenericBuilder {
 					BlobMetadata blobMetadata = blobstore.blobMetadata(datasetID, metadata.getName());
 					if (blobMetadata.getContentMetadata().getContentLength() > 0L) {
 						LogicalData item = new LogicalData(metadata.getName());
-						item.setIdentifier(metadata.getName());
+						item.setName(metadata.getName());
 						item.setSize(blobMetadata.getContentMetadata().getContentLength());
+						List<DataSource> dsList = new ArrayList<DataSource>();
+						dsList.add(ds);
+						item.setDataSources(dsList);
 						datas.add(item);
 					}
 				}
 			}
 		
 			ManagedDataset dataset = new ManagedDataset("1", datasetID);
-			List<DataSource> dsList = new ArrayList<DataSource>();
-			dsList.add(ds);
-			dataset.setDataSources(dsList);
 			
 			registryMock.addDataset(dataset);
 			registryMock.addLogicalDatas(dataset, datas);

@@ -12,8 +12,7 @@ public class DataSourcePreparation {
 	
 	static {
 		DataSource ds = new DataSource();
-		ds.setType(DataSource.SWIFT_DATA_SOURCE);
-		ds.setUrl("https://149.156.10.131:8443/auth/v1.0");
+		ds.setResourceUrl("https://149.156.10.131:8443/auth/v1.0");
 		
 		DS.add(ds);
 	}

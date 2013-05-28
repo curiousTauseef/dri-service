@@ -18,6 +18,7 @@ import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.domain.Blob;
 
 import vphshare.driservice.config.Configuration;
+import vphshare.driservice.domain.DataSource;
 import vphshare.driservice.domain.LogicalData;
 import vphshare.driservice.domain.ManagedDataset;
 import vphshare.driservice.exceptions.InvalidConfigurationException;
@@ -36,17 +37,17 @@ public class CustomValidationStrategy implements ValidationStrategy {
 	private DefaultValidationStrategy defaultStrategy;
 	
 	@Override
-	public String setup(ManagedDataset dataset, LogicalData item, BlobStoreContext context) {
+	public String setup(ManagedDataset dataset, LogicalData item, DataSource ds, BlobStoreContext context) {
 		
 		// if the size is 0, then skip
 		if (item.getSize() <= 0L)
 			return "";
 		
 		if (item.getSize() < cfg.getValidationSizeThreshold())
-			return defaultStrategy.setup(dataset, item, context);
+			return defaultStrategy.setup(dataset, item, ds, context);
 		
 		BlobStore blobstore = context.getBlobStore();
-		Blob blob = blobstore.getBlob(dataset.getName(), item.getIdentifier());
+		Blob blob = blobstore.getBlob(dataset.getName(), ds.getName());
 		if (blob == null)
 			throw new ResourceNotFoundException("No such blob or problem with GET options");
 		
@@ -78,20 +79,20 @@ public class CustomValidationStrategy implements ValidationStrategy {
 	}
 	
 	@Override
-	public boolean validate(ManagedDataset dataset, LogicalData item, BlobStoreContext context) {
+	public boolean validate(ManagedDataset dataset, LogicalData item, DataSource ds, BlobStoreContext context) {
 
 		// if the size is 0, then skip
 		if (item.getSize() <= 0L)
 			return true;
 		
 		if (item.getSize() < cfg.getValidationSizeThreshold())
-			return defaultStrategy.validate(dataset, item, context);
+			return defaultStrategy.validate(dataset, item, ds, context);
 		
 		AsyncBlobStore blobstore = context.getAsyncBlobStore();
 		Map<Integer, ListenableFuture<Blob>> futures = new HashMap<Integer, ListenableFuture<Blob>>();
 		MersenneTwister PRNG = new MersenneTwister();
 		
-		String[] originals = new StrTokenizer(item.getDriChecksum(), ';').getTokenArray();
+		String[] originals = new StrTokenizer(item.getChecksum(), ';').getTokenArray();
 		if (originals.length != cfg.getNumberOfChunksPerItem()) {
 			throw new InvalidConfigurationException("The number of chunks in AIR register is inconsistent with the " +
 					"configuration or AIR content is not consistent with storage data! Please update dataset checksums or update AIR metadata, respectively.");
@@ -100,7 +101,7 @@ public class CustomValidationStrategy implements ValidationStrategy {
 		for (int i = 0; i < cfg.getNumberOfChunksPerValidation(); i++) {
 			
 			int k = PRNG.nextInt(cfg.getNumberOfChunksPerItem());
-			ListenableFuture<Blob> future = BlobstoreHelper.getKthChunk(dataset, item, blobstore, k, cfg.getNumberOfChunksPerItem());
+			ListenableFuture<Blob> future = BlobstoreHelper.getKthChunk(dataset, item, ds, blobstore, k, cfg.getNumberOfChunksPerItem());
 
 			futures.put(k, future);
 		}

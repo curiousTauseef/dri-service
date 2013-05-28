@@ -76,7 +76,7 @@ public class MetadataRegistryMock implements MetadataRegistry {
 
 	@Override
 	public void updateChecksum(ManagedDataset dataset, LogicalData item) {
-		getLogicalData(dataset, item.getId()).setDriChecksum(item.getDriChecksum());
+		getLogicalData(dataset, item.getId()).setChecksum(item.getChecksum());
 	}
 
 }

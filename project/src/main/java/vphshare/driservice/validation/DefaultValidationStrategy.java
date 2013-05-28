@@ -9,6 +9,7 @@ import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.domain.Blob;
 
+import vphshare.driservice.domain.DataSource;
 import vphshare.driservice.domain.LogicalData;
 import vphshare.driservice.domain.ManagedDataset;
 import vphshare.driservice.exceptions.ResourceNotFoundException;
@@ -16,32 +17,38 @@ import vphshare.driservice.exceptions.ResourceNotFoundException;
 public class DefaultValidationStrategy implements ValidationStrategy {
 
 	@Override
-	public String setup(ManagedDataset dataset, LogicalData item, BlobStoreContext context) {
+	public String setup(ManagedDataset dataset, LogicalData item, DataSource ds, BlobStoreContext context) {
 		
 		// if the size is 0, then skip
 		if (item.getSize() <= 0L)
 			return "";
 		
-		return getChecksum(dataset, item, context);
+		return getChecksum(dataset, item, ds, context);
 	}
 
 	@Override
-	public boolean validate(ManagedDataset dataset, LogicalData item, BlobStoreContext context) {
+	public boolean validate(ManagedDataset dataset, LogicalData item, DataSource ds, BlobStoreContext context) {
 		
 		// if the size is 0, then skip
 		if (item.getSize() <= 0L)
 			return true;
 				
-		String checksum = getChecksum(dataset, item, context);
-		boolean valid = item.getDriChecksum().equals(checksum);
+		String checksum = getChecksum(dataset, item, ds, context);
+		boolean valid = item.getChecksum().equals(checksum);
 		
 		return valid;
 	}
 
-	protected String getChecksum(ManagedDataset dataset, LogicalData item, BlobStoreContext context) {
+	protected String getChecksum(ManagedDataset dataset, LogicalData item, DataSource ds, BlobStoreContext context) {
 		
 		BlobStore blobstore = context.getBlobStore();
-		Blob blob = blobstore.getBlob(dataset.getName(), item.getIdentifier());
+		Blob blob = null;
+		try {
+			blob = blobstore.getBlob(ds.getContainer(), ds.getName());
+		} catch (RuntimeException e) {
+			throw new ResourceNotFoundException("Unable to retrieve " + item.getId() + " from cloud resource");
+		}
+		
 		if (blob == null)
 			throw new ResourceNotFoundException();
 		

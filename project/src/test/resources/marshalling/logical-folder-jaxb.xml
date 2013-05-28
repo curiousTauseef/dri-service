@@ -1,0 +1,21 @@
+<logicalDataWrapped>
+	<logicalData>
+		<checksum>0</checksum>
+		<createDate>1366296931000</createDate>
+		<lastValidationDate>0</lastValidationDate>
+		<length>0</length>
+		<lockTimeout>0</lockTimeout>
+		<modifiedDate>1366296931000</modifiedDate>
+		<name />
+		<owner>root</owner>
+		<parentRef>1</parentRef>
+		<pdriGroupId>0</pdriGroupId>
+		<supervised>false</supervised>
+		<type>logical.folder</type>
+		<uid>1</uid>
+	</logicalData>
+	<path>/</path>
+	<permissions>
+		<owner>root</owner>
+	</permissions>
+</logicalDataWrapped>

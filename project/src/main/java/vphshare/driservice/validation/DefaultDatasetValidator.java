@@ -5,6 +5,7 @@ import static vphshare.driservice.notification.domain.ValidationStatus.UNAVAILAB
 import static vphshare.driservice.notification.domain.ValidationStatus.VALID;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -23,7 +24,6 @@ import vphshare.driservice.registry.MetadataRegistry;
 
 public class DefaultDatasetValidator implements DatasetValidator {
 	
-	@SuppressWarnings("unused")
 	private static final Logger LOG = Logger.getLogger(DefaultDatasetValidator.class.getName());
 
 	@Inject
@@ -39,27 +39,25 @@ public class DefaultDatasetValidator implements DatasetValidator {
 		DatasetReport report = new DatasetReport(dataset);
 		report.setStatus(VALID);
 		List<LogicalData> items = registry.getLogicalDatas(dataset);
-
-		BlobStoreContext context = BlobStoreContextProvider.getContext(dataset.getDataSources().get(0));
-		try {
-			computeChecksumsForEachLogicalData(dataset, report, items, context);
-			
-		} finally {
-			context.close();
-		}
-		
+		LOG.log(Level.INFO, "Found " + items.size() + " items!");
+		computeChecksumsForEachLogicalData(dataset, report, items);
 		return report;
 	}
 
-	private void computeChecksumsForEachLogicalData(ManagedDataset dataset,
-			DatasetReport report, List<LogicalData> items, BlobStoreContext context) {
+	private void computeChecksumsForEachLogicalData(ManagedDataset dataset, DatasetReport report, List<LogicalData> items) {
 		for (LogicalData item : items) {
-			try {
-				item.setDriChecksum(strategy.setup(dataset, item, context));
-				registry.updateChecksum(dataset, item);
-			
-			} catch (ResourceNotFoundException e) {
-				report.addEntryLog(item.getIdentifier(), UNAVAILABLE);
+			if (item.getDataSources().size() > 0) {
+				BlobStoreContext context = null;
+				try {
+					context = BlobStoreContextProvider.getContext(item.getDataSources().get(0));
+					item.setChecksum(strategy.setup(dataset, item, item.getDataSources().get(0), context));
+					registry.updateChecksum(dataset, item);
+				
+				} catch (ResourceNotFoundException e) {
+					report.addEntryLog(item.getName(), UNAVAILABLE);
+				} finally {
+					context.close();
+				}
 			}
 		}
 	}
@@ -71,7 +69,7 @@ public class DefaultDatasetValidator implements DatasetValidator {
 		report.setStatus(VALID);
 
 		try {
-			validateDatasetForEachDataSource(dataset, items, report);
+			validateDatasetItems(dataset, items, report);
 
 		// TODO Swift doesn't throw this exception when container is deleted...
 		} catch (ContainerNotFoundException e) {
@@ -88,49 +86,48 @@ public class DefaultDatasetValidator implements DatasetValidator {
 		return report;
 	}
 
-	private void validateDatasetForEachDataSource(ManagedDataset dataset,
-			List<LogicalData> items, DatasetReport report) {
-		for (DataSource dataSource : dataset.getDataSources()) {
-			BlobStoreContext context = BlobStoreContextProvider.getContext(dataSource);
-			try {
-				validateAllLogicalDatas(dataset, items, report, context);
-				
-			} finally {
-				context.close();
-			}
-		}
-	}
-
-	private void validateAllLogicalDatas(ManagedDataset dataset,
-			List<LogicalData> items, DatasetReport report, BlobStoreContext context) {
+	private void validateDatasetItems(ManagedDataset dataset, List<LogicalData> items, DatasetReport report) {
 		for (LogicalData item : items) {
-			try {
-				ValidationStatus status = validateLogicalData(dataset, item, context);
-				if (!status.isValid()) {
-					report.addEntryLog(item.getIdentifier(), status);
-				}
-
-			} catch (ResourceNotFoundException e) {
-				report.addEntryLog(item.getIdentifier(), UNAVAILABLE);
-			}
+			validateLogicalData(dataset, item, report);
 		}
 	}
 
-	protected ValidationStatus validateLogicalData(ManagedDataset dataset, LogicalData item, BlobStoreContext context) {
-		return strategy.validate(dataset, item, context) ? VALID : INTEGRITY_ERROR;
+	private void validateLogicalData(ManagedDataset dataset, LogicalData item, DatasetReport report) {
+		for (DataSource ds : item.getDataSources()) {
+			validateLogicalDataOnDataSource(dataset, item, ds, report);
+		}
+	}
+	
+	private void validateLogicalDataOnDataSource(ManagedDataset dataset, LogicalData item, DataSource ds, DatasetReport report) {
+		BlobStoreContext context = BlobStoreContextProvider.getContext(ds);
+		try {
+			ValidationStatus status = validateLogicalData(dataset, item, ds, context);
+			if (!status.isValid()) {
+				report.addEntryLog(item.getName(), status);
+			}
+
+		} catch (ResourceNotFoundException e) {
+			report.addEntryLog(item.getName(), UNAVAILABLE);
+		} finally {
+			context.close();
+		}
+	}
+
+	protected ValidationStatus validateLogicalData(ManagedDataset dataset, LogicalData item, DataSource ds, BlobStoreContext context) {
+		return strategy.validate(dataset, item, ds, context) ? VALID : INTEGRITY_ERROR;
 	}
 
 	@Override
 	public DatasetReport computeChecksum(ManagedDataset dataset, LogicalData item) {
 		DatasetReport report = new DatasetReport(dataset);
-		BlobStoreContext context = BlobStoreContextProvider.getContext(dataset.getDataSources().get(0));
+		BlobStoreContext context = BlobStoreContextProvider.getContext(item.getDataSources().get(0));
 		
 		try {
-			item.setDriChecksum(strategy.setup(dataset, item, context));
+			item.setChecksum(strategy.setup(dataset, item, item.getDataSources().get(0), context));
 			registry.updateChecksum(dataset, item);
 		
 		} catch (ResourceNotFoundException e) {
-			report.addEntryLog(item.getIdentifier(), UNAVAILABLE);
+			report.addEntryLog(item.getName(), UNAVAILABLE);
 		}
 		
 		return report;

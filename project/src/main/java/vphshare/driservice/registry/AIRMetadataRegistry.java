@@ -112,7 +112,7 @@ public class AIRMetadataRegistry implements MetadataRegistry {
 	public void updateChecksum(ManagedDataset dataset, LogicalData item) {
 		Form form = new Form();
 		form.add("_id", item.getId());
-		form.add("dri_checksum", item.getDriChecksum());
+		form.add("dri_checksum", item.getChecksum());
 		
 		UriTemplate uri = new UriTemplate(UPDATE_CHECKSUM_URI);
 		service.path(uri.createURI()).post(ClientResponse.class, form);

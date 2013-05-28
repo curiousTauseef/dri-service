@@ -23,7 +23,7 @@ public class ComputeChecksumsJob implements Job {
 	private static final Logger LOG = Logger.getLogger(DatasetValidationJob.class.getName());
 
 	@Inject
-	private DatasetValidator strategy;
+	private DatasetValidator validator;
 	@Inject
 	private NotificationService notificationService;
 	@Inject
@@ -39,7 +39,7 @@ public class ComputeChecksumsJob implements Job {
 		LOG.log(INFO, "Compute dataset checksums job for dataset: " + dataset.getName());
 		try {
 			long start = System.currentTimeMillis();
-			DatasetReport report = strategy.computeChecksums(dataset);
+			DatasetReport report = validator.computeChecksums(dataset);
 			long end = System.currentTimeMillis();
 			
 			report.setDuration((end - start) / 1000L);

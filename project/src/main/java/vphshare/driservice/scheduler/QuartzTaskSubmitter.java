@@ -83,13 +83,13 @@ public class QuartzTaskSubmitter implements TaskSubmitter {
 		synchronized (this.getClass()) {
 			try {
 				JobDetail job = newJob(UpdateSingleItemChecksumJob.class)
-						.withIdentity(dataset.getName() + ":" + item.getIdentifier(), "update-item-job")
+						.withIdentity(dataset.getName() + ":" + item.getName(), "update-item-job")
 						.build();
 				job.getJobDataMap().put("dataset", dataset);
 				job.getJobDataMap().put("item", item);
 		
 				Trigger trigger = newTrigger()
-						.withIdentity(dataset.getName() + ":" + item.getIdentifier(), "update-item-trigger")
+						.withIdentity(dataset.getName() + ":" + item.getName(), "update-item-trigger")
 						.startNow()
 						.build();
 				
@@ -97,7 +97,7 @@ public class QuartzTaskSubmitter implements TaskSubmitter {
 				
 			} catch (ObjectAlreadyExistsException e) {
 				LOG.log(INFO, "Updating checksum job of item " 
-							+ item.getIdentifier() + ":" + dataset.getName() + " already exists : ");
+							+ item.getName() + ":" + dataset.getName() + " already exists : ");
 				// TODO send notification that probably the validation period is too short for jobs to finish
 			}
 		}
