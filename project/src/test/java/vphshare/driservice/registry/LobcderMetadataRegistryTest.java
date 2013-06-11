@@ -14,8 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import vphshare.driservice.domain.ManagedDataset;
-import vphshare.driservice.registry.AIRMetadataRegistry.DatasetCategory;
+import vphshare.driservice.domain.CloudDirectory;
 import vphshare.driservice.registry.lobcder.LobcderMetadataRegistry;
 import vphshare.driservice.registry.lobcder.WrappedLogicalData;
 
@@ -40,7 +39,7 @@ public class LobcderMetadataRegistryTest {
 	public void shouldReturnNoDatasets() {
 		when(serviceMock.path(anyString()).get(any(GenericType.class)))
 		.thenReturn(new ArrayList<WrappedLogicalData>());
-		List<ManagedDataset> datasets = registry.getDatasets(DatasetCategory.ALL);
+		List<CloudDirectory> datasets = registry.getCloudDirectories(false);
 		assertEquals(0, datasets.size());
 	}
 }

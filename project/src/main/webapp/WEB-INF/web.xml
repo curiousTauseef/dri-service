@@ -47,27 +47,27 @@
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 	
-<!-- 	<security-constraint> -->
-<!-- 		<web-resource-collection> -->
-<!-- 			<web-resource-name>Whole Application</web-resource-name> -->
-<!-- 			<url-pattern>/dri/*</url-pattern> -->
-<!-- 			<http-method>GET</http-method> -->
-<!-- 			<http-method>POST</http-method> -->
-<!-- 		</web-resource-collection> -->
-<!-- 		<auth-constraint> -->
-<!-- 			<role-name>driservice</role-name> -->
-<!-- 		</auth-constraint> -->
-<!-- 		<user-data-constraint> -->
-<!-- 			<transport-guarantee>NONE</transport-guarantee> -->
-<!-- 		</user-data-constraint> -->
-<!-- 	</security-constraint> -->
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Whole Application</web-resource-name>
+			<url-pattern>/dri/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>driservice</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
 	
-<!-- 	<login-config> -->
-<!-- 		<auth-method>DIGEST</auth-method> -->
-<!-- 		<realm-name>driservice</realm-name> -->
-<!-- 	</login-config> -->
+	<login-config>
+		<auth-method>DIGEST</auth-method>
+		<realm-name>driservice</realm-name>
+	</login-config>
 	
-<!-- 	<security-role> -->
-<!-- 		<role-name>driservice</role-name> -->
-<!-- 	</security-role> -->
+	<security-role>
+		<role-name>driservice</role-name>
+	</security-role>
 </web-app>

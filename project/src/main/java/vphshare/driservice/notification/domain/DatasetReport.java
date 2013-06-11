@@ -4,18 +4,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import vphshare.driservice.domain.ManagedDataset;
+import vphshare.driservice.domain.CloudDirectory;
 
 
 public class DatasetReport {
 
-	private ManagedDataset dataset;
+	private CloudDirectory dataset;
 	private ValidationStatus status;
 	private String title;
 	private long duration;
 	private Map<String, ValidationStatus> entryLogs;
 	
-	public DatasetReport(ManagedDataset dataset) {
+	public DatasetReport(CloudDirectory dataset) {
 		this.dataset = dataset;
 		entryLogs = new HashMap<String, ValidationStatus>();
 		status = ValidationStatus.VALID;
@@ -25,11 +25,11 @@ public class DatasetReport {
 		return status.isValid();
 	}
 	
-	public ManagedDataset getDataset() {
+	public CloudDirectory getDataset() {
 		return dataset;
 	}
 
-	public void setDataset(ManagedDataset dataset) {
+	public void setDataset(CloudDirectory dataset) {
 		this.dataset = dataset;
 	}
 

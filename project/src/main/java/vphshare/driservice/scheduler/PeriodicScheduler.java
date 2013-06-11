@@ -1,16 +1,14 @@
 package vphshare.driservice.scheduler;
 
-import static java.util.logging.Level.INFO;
-import static java.util.logging.Level.SEVERE;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.util.Calendar;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import org.apache.log4j.Logger;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -20,7 +18,7 @@ import org.quartz.Trigger;
 import vphshare.driservice.config.Configuration;
 
 public class PeriodicScheduler {
-	private static final Logger LOG = Logger.getLogger(PeriodicScheduler.class.getName());
+	private static final Logger logger = Logger.getLogger(PeriodicScheduler.class);
 	
 	private final Scheduler scheduler;
 	
@@ -28,14 +26,16 @@ public class PeriodicScheduler {
 	public PeriodicScheduler(SchedulerFactory factory, InjectingJobFactory jobFactory, Configuration cfg) {
 		Scheduler scheduler = null;
 		try  {
-			LOG.log(INFO, "Started configuring periodic scheduler!");
+			logger.info("Started configuring periodic scheduler!");
 			scheduler = factory.getScheduler();
 			scheduler.setJobFactory(jobFactory);
 			
-			JobDetail job = newJob(AllDatasetsValidationJob.class)
+			logger.info("Configuring periodic validation job for all supervised directories");
+			JobDetail job = newJob(AllDirectoriesValidationJob.class)
 					.withIdentity("periodic-validation-job", "validation")
 					.build();
 	
+			logger.info("Configuring periodic trigger for periodic job");
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTimeInMillis(Calendar.getInstance().getTimeInMillis() + cfg.getValidationStartDelay() * 1000L);
 			Trigger trigger = newTrigger()
@@ -46,12 +46,13 @@ public class PeriodicScheduler {
 					.startNow()
 					.build();
 	
+			logger.info("Scheduling periodic validation job with trigger [validationPeriod=" + cfg.getValidationPeriod() + "min]");
 			scheduler.scheduleJob(job, trigger);
 			scheduler.start();
-			LOG.log(INFO, "Finished configuring periodic scheduler!");
+			logger.info("Finished configuring periodic scheduler!");
 			
 		} catch (SchedulerException e) {
-			LOG.log(SEVERE, "Unable to create scheduler", e);
+			logger.error("Unable to create scheduler", e);
 	
 		} finally {
 			this.scheduler = scheduler;
@@ -65,18 +66,18 @@ public class PeriodicScheduler {
 	public void start() {
 		try {
 			scheduler.start();
-			LOG.log(INFO, "Scheduler started successfully!");
+			logger.info("Scheduler started successfully!");
 		} catch (SchedulerException e) {
-			LOG.log(SEVERE, "Unable to start the scheduler", e);
+			logger.error("Unable to start the scheduler", e);
 		}
 	}
 	
 	public void shutdown() {
 		try {
 			scheduler.shutdown(false);
-			LOG.log(INFO, "Scheduler stopped successfully!");
+			logger.info("Scheduler stopped successfully!");
 		} catch (SchedulerException e) {
-			LOG.log(SEVERE, "Unable to shutdown the scheduler", e);
+			logger.error("Unable to shutdown the scheduler", e);
 		}
 	}
 }

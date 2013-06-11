@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
 
-import vphshare.driservice.domain.ManagedDataset;
+import vphshare.driservice.domain.CloudDirectory;
 import vphshare.driservice.exceptions.AppException;
 import vphshare.driservice.notification.domain.DatasetReport;
 import vphshare.driservice.notification.domain.Notification;
@@ -42,7 +42,7 @@ public class DefaultNotificationService implements NotificationService {
 		notification.setDate(new Date());
 		notification.setDuration(report.getDuration());
 		
-		ManagedDataset dataset = report.getDataset();
+		CloudDirectory dataset = report.getDataset();
 		StringBuilder text = new StringBuilder();
 		text.append("The dataset ");
 		text.append(dataset.getName());
@@ -53,7 +53,7 @@ public class DefaultNotificationService implements NotificationService {
 
 	@Override
 	public void notifyAsInvalid(DatasetReport report) {
-		ManagedDataset dataset = report.getDataset();
+		CloudDirectory dataset = report.getDataset();
 		
 		Notification notification = new Notification();
 		notification.setDataset(dataset);
@@ -80,7 +80,7 @@ public class DefaultNotificationService implements NotificationService {
 	}
 
 	@Override
-	public void notifyProcessingException(ManagedDataset dataset, Exception e) {
+	public void notifyProcessingException(CloudDirectory dataset, Exception e) {
 		Notification notification = new Notification();
 		notification.setDataset(dataset);
 		notification.setTitle("Processing exception occured");

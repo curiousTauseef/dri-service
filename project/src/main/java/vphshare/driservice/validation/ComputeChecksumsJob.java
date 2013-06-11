@@ -12,7 +12,7 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import vphshare.driservice.domain.ManagedDataset;
+import vphshare.driservice.domain.CloudDirectory;
 import vphshare.driservice.notification.NotificationService;
 import vphshare.driservice.notification.domain.DatasetReport;
 import vphshare.driservice.registry.MetadataRegistry;
@@ -20,7 +20,7 @@ import vphshare.driservice.registry.MetadataRegistry;
 @DisallowConcurrentExecution
 public class ComputeChecksumsJob implements Job {
 
-	private static final Logger LOG = Logger.getLogger(DatasetValidationJob.class.getName());
+	private static final Logger LOG = Logger.getLogger(DirectoryValidationJob.class.getName());
 
 	@Inject
 	private DatasetValidator validator;
@@ -31,11 +31,11 @@ public class ComputeChecksumsJob implements Job {
 	
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		ManagedDataset dataset = (ManagedDataset) context.getJobDetail().getJobDataMap().get("dataset");
+		CloudDirectory dataset = (CloudDirectory) context.getJobDetail().getJobDataMap().get("dataset");
 		doTheTask(dataset);
 	}
 
-	private void doTheTask(ManagedDataset dataset) {
+	private void doTheTask(CloudDirectory dataset) {
 		LOG.log(INFO, "Compute dataset checksums job for dataset: " + dataset.getName());
 		try {
 			long start = System.currentTimeMillis();
@@ -45,7 +45,7 @@ public class ComputeChecksumsJob implements Job {
 			report.setDuration((end - start) / 1000L);
 			
 			if (!report.isValid())
-				registry.unsetAsManaged(dataset);
+				registry.unsetSupervised(dataset);
 			
 			notificationService.notifyAboutComputedChecksums(report);
 			

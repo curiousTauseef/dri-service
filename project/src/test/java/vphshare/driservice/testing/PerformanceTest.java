@@ -12,7 +12,7 @@ import java.util.Properties;
 import org.apache.commons.io.FileUtils;
 
 import vphshare.driservice.domain.DataSource;
-import vphshare.driservice.domain.ManagedDataset;
+import vphshare.driservice.domain.CloudDirectory;
 import vphshare.driservice.notification.domain.DatasetReport;
 import vphshare.driservice.providers.PropertiesProvider;
 import vphshare.driservice.registry.MetadataRegistry;
@@ -81,7 +81,7 @@ public class PerformanceTest {
 				
 				// 2) create dataset at the data source & register it as managed
 				final MetadataRegistryMock registry = new MetadataRegistryMock();
-				ManagedDataset dataset = builder.build(registry, ds);
+				CloudDirectory dataset = builder.build(registry, ds);
 				
 				for (final long threshold : thresholdSizes) {
 					for (final int n : numberOfChunks) {

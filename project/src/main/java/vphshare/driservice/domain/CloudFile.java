@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.commons.collections.Predicate;
 
 
-public class LogicalData {
+public class CloudFile {
 
 	private String id;
 	private String name;
@@ -17,10 +17,10 @@ public class LogicalData {
 	
 	private List<DataSource> dataSources;
 
-	public LogicalData() {
+	public CloudFile() {
 	}
 
-	public LogicalData(String id) {
+	public CloudFile(String id) {
 		this.id = id;
 	}
 
@@ -94,9 +94,9 @@ public class LogicalData {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof LogicalData))
+		if (!(obj instanceof CloudFile))
 			return false;
-		LogicalData other = (LogicalData) obj;
+		CloudFile other = (CloudFile) obj;
 		
 		if (id == null) {
 			if (other.id != null)
@@ -113,7 +113,7 @@ public class LogicalData {
 			
 			@Override
 			public boolean evaluate(Object object) {
-				LogicalData item = (LogicalData) object;
+				CloudFile item = (CloudFile) object;
 				return item.getId().equals(idOrName) || item.getName().equals(idOrName);
 
 			}

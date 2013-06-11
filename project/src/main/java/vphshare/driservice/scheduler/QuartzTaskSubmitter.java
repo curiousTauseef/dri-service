@@ -1,28 +1,26 @@
 package vphshare.driservice.scheduler;
 
-import static java.util.logging.Level.INFO;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
-import java.util.logging.Logger;
-
 import javax.inject.Inject;
 
+import org.apache.log4j.Logger;
 import org.quartz.JobDetail;
 import org.quartz.ObjectAlreadyExistsException;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 
-import vphshare.driservice.domain.LogicalData;
-import vphshare.driservice.domain.ManagedDataset;
+import vphshare.driservice.domain.CloudDirectory;
+import vphshare.driservice.domain.CloudFile;
 import vphshare.driservice.validation.ComputeChecksumsJob;
-import vphshare.driservice.validation.DatasetValidationJob;
+import vphshare.driservice.validation.DirectoryValidationJob;
 import vphshare.driservice.validation.UpdateSingleItemChecksumJob;
 
 public class QuartzTaskSubmitter implements TaskSubmitter {
 
-	private static final Logger LOG = Logger.getLogger(QuartzTaskSubmitter.class.getName());
+	private static final Logger logger = Logger.getLogger(QuartzTaskSubmitter.class);
 	
 	private Scheduler scheduler;
 
@@ -32,72 +30,72 @@ public class QuartzTaskSubmitter implements TaskSubmitter {
 	}
 	
 	@Override
-	public void submitValidationJob(ManagedDataset dataset) throws SchedulerException {
+	public void submitValidationJob(CloudDirectory directory) throws SchedulerException {
 		synchronized (this.getClass()) {
 			try {
-				JobDetail job = newJob(DatasetValidationJob.class)
-						.withIdentity(dataset.getName(), "dataset-validation-job")
+				JobDetail job = newJob(DirectoryValidationJob.class)
+						.withIdentity(directory.getName(), "dataset-validation-job")
 						.build();
-				job.getJobDataMap().put("dataset", dataset);
+				job.getJobDataMap().put("dataset", directory);
 	
 				Trigger trigger = newTrigger()
-						.withIdentity(dataset.getName(), "dataset-validation-trigger")
+						.withIdentity(directory.getName(), "dataset-validation-trigger")
 						.startNow()
 						.build();
 				
-				LOG.log(INFO, "Scheduling job: " + job.getKey() + ", " + job.getDescription());
+				logger.info("Scheduling job: " + job.getKey() + ", " + job.getDescription());
 				scheduler.scheduleJob(job, trigger);
 				
 			} catch (ObjectAlreadyExistsException e) {
-				LOG.log(INFO, "Validation job of dataset " + dataset.getName() + " already exists : ");
+				logger.info("Validation job of dataset " + directory.getName() + " already exists : ");
 				// TODO send notification that probably the validation period is too short for jobs to finish
 			}
 		}
 	}
 
 	@Override
-	public void submitComputeChecksumsJob(ManagedDataset dataset) throws SchedulerException {
+	public void submitComputeChecksumsJob(CloudDirectory directory) throws SchedulerException {
 		synchronized (this.getClass()) {
 			try {
 				JobDetail job = newJob(ComputeChecksumsJob.class)
-						.withIdentity(dataset.getName(), "compute-checksums-job")
+						.withIdentity(directory.getName(), "compute-checksums-job")
 						.build();
-				job.getJobDataMap().put("dataset", dataset);
+				job.getJobDataMap().put("dataset", directory);
 		
 				Trigger trigger = newTrigger()
-						.withIdentity(dataset.getName(), "compute-checksums-trigger")
+						.withIdentity(directory.getName(), "compute-checksums-trigger")
 						.startNow()
 						.build();
 				
 				scheduler.scheduleJob(job, trigger);
 				
 			} catch (ObjectAlreadyExistsException e) {
-				LOG.log(INFO, "Computing checksums job of dataset " + dataset.getName() + " already exists : ");
+				logger.info("Computing checksums job of dataset " + directory.getName() + " already exists : ");
 				// TODO send notification that probably the validation period is too short for jobs to finish
 			}
 		}
 	}
 	
 	@Override
-	public void submitUpdateSingleItemChecksumJob(ManagedDataset dataset, LogicalData item) throws SchedulerException {
+	public void submitUpdateSingleItemChecksumJob(CloudDirectory directory, CloudFile file) throws SchedulerException {
 		synchronized (this.getClass()) {
 			try {
 				JobDetail job = newJob(UpdateSingleItemChecksumJob.class)
-						.withIdentity(dataset.getName() + ":" + item.getName(), "update-item-job")
+						.withIdentity(directory.getName() + ":" + file.getName(), "update-item-job")
 						.build();
-				job.getJobDataMap().put("dataset", dataset);
-				job.getJobDataMap().put("item", item);
+				job.getJobDataMap().put("dataset", directory);
+				job.getJobDataMap().put("item", file);
 		
 				Trigger trigger = newTrigger()
-						.withIdentity(dataset.getName() + ":" + item.getName(), "update-item-trigger")
+						.withIdentity(directory.getName() + ":" + file.getName(), "update-item-trigger")
 						.startNow()
 						.build();
 				
 				scheduler.scheduleJob(job, trigger);
 				
 			} catch (ObjectAlreadyExistsException e) {
-				LOG.log(INFO, "Updating checksum job of item " 
-							+ item.getName() + ":" + dataset.getName() + " already exists : ");
+				logger.info("Updating checksum job of item " 
+							+ file.getName() + ":" + directory.getName() + " already exists : ");
 				// TODO send notification that probably the validation period is too short for jobs to finish
 			}
 		}

@@ -4,15 +4,15 @@ import org.quartz.SchedulerException;
 
 import com.google.inject.ImplementedBy;
 
-import vphshare.driservice.domain.LogicalData;
-import vphshare.driservice.domain.ManagedDataset;
+import vphshare.driservice.domain.CloudFile;
+import vphshare.driservice.domain.CloudDirectory;
 
 @ImplementedBy(QuartzTaskSubmitter.class)
 public interface TaskSubmitter {
 
-	void submitValidationJob(ManagedDataset dataset) throws SchedulerException;
+	void submitValidationJob(CloudDirectory directory) throws SchedulerException;
 	
-	void submitComputeChecksumsJob(ManagedDataset dataset) throws SchedulerException;
+	void submitComputeChecksumsJob(CloudDirectory directory) throws SchedulerException;
 	
-	void submitUpdateSingleItemChecksumJob(ManagedDataset dataset, LogicalData item) throws SchedulerException;
+	void submitUpdateSingleItemChecksumJob(CloudDirectory directory, CloudFile item) throws SchedulerException;
 }

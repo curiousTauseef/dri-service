@@ -31,6 +31,7 @@ public class BlobStoreContextProvider {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private static BlobStoreContext createS3BlobStore(DataSource ds) {
 		Properties overrides = new Properties();
 		overrides.setProperty(PROPERTY_TRUST_ALL_CERTS, "true");

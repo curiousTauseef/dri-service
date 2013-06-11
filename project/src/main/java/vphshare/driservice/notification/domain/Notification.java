@@ -5,23 +5,23 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
-import vphshare.driservice.domain.ManagedDataset;
+import vphshare.driservice.domain.CloudDirectory;
 
 
 public class Notification {
 
-	private ManagedDataset dataset;
+	private CloudDirectory dataset;
 	private String title;
 	private Date date;
 	private long duration;
 	private String content;
 	private Map<String, ValidationStatus> entryLogs;
 	
-	public ManagedDataset getDataset() {
+	public CloudDirectory getDataset() {
 		return dataset;
 	}
 	
-	public void setDataset(ManagedDataset dataset) {
+	public void setDataset(CloudDirectory dataset) {
 		this.dataset = dataset;
 	}
 	

@@ -2,15 +2,15 @@ package vphshare.driservice.domain;
 
 import org.apache.commons.collections.Predicate;
 
-public class ManagedDataset implements Comparable<ManagedDataset> {
+public class CloudDirectory implements Comparable<CloudDirectory> {
 
 	private String id;
 	private String name;
 
-	public ManagedDataset() {
+	public CloudDirectory() {
 	}
 
-	public ManagedDataset(String id, String name) {
+	public CloudDirectory(String id, String name) {
 		this.id = id;
 		this.name = name;
 	}
@@ -45,9 +45,9 @@ public class ManagedDataset implements Comparable<ManagedDataset> {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof ManagedDataset))
+		if (!(obj instanceof CloudDirectory))
 			return false;
-		ManagedDataset other = (ManagedDataset) obj;
+		CloudDirectory other = (CloudDirectory) obj;
 		
 		if (id == null) {
 			if (other.id != null)
@@ -60,7 +60,7 @@ public class ManagedDataset implements Comparable<ManagedDataset> {
 	}
 
 	@Override
-	public int compareTo(ManagedDataset o) {
+	public int compareTo(CloudDirectory o) {
 		return this.name.compareTo(o.getName());
 	}
 
@@ -69,7 +69,7 @@ public class ManagedDataset implements Comparable<ManagedDataset> {
 			
 			@Override
 			public boolean evaluate(Object object) {
-				ManagedDataset dataset = (ManagedDataset) object;
+				CloudDirectory dataset = (CloudDirectory) object;
 				return dataset.getId().equals(datasetIDorName) || dataset.getName().equals(datasetIDorName);
 
 			}

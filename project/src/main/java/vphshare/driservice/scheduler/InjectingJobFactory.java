@@ -12,7 +12,6 @@ import com.google.inject.Injector;
 
 public class InjectingJobFactory implements JobFactory {
 
-
 	private final Injector injector;
 
 	@Inject

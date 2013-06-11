@@ -1,6 +1,6 @@
 package vphshare.driservice.notification;
 
-import vphshare.driservice.domain.ManagedDataset;
+import vphshare.driservice.domain.CloudDirectory;
 import vphshare.driservice.exceptions.AppException;
 import vphshare.driservice.notification.domain.DatasetReport;
 
@@ -15,7 +15,7 @@ public interface NotificationService {
 	
 	void notifyAsInvalid(DatasetReport report);
 	
-	void notifyProcessingException(ManagedDataset dataset, Exception e);
+	void notifyProcessingException(CloudDirectory dataset, Exception e);
 	
 	void notifyException(AppException ae);
 }

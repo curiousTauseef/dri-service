@@ -9,15 +9,15 @@ import org.jclouds.blobstore.AsyncBlobStore;
 import org.jclouds.blobstore.domain.Blob;
 
 import vphshare.driservice.domain.DataSource;
-import vphshare.driservice.domain.LogicalData;
-import vphshare.driservice.domain.ManagedDataset;
+import vphshare.driservice.domain.CloudFile;
+import vphshare.driservice.domain.CloudDirectory;
 import vphshare.driservice.exceptions.InvalidConfigurationException;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
 public class BlobstoreHelper {
 
-	public static ListenableFuture<Blob> getKthChunk(ManagedDataset dataset, LogicalData item, DataSource ds, AsyncBlobStore blobstore, int k, int chunks) {
+	public static ListenableFuture<Blob> getKthChunk(CloudDirectory dataset, CloudFile item, DataSource ds, AsyncBlobStore blobstore, int k, int chunks) {
 		long chunkSize = item.getSize() / chunks;
 		long start = k * chunkSize;
 		long end = (k+1) * chunkSize - 1;

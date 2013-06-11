@@ -8,15 +8,15 @@ import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.domain.Blob;
 
 import vphshare.driservice.domain.DataSource;
-import vphshare.driservice.domain.LogicalData;
-import vphshare.driservice.domain.ManagedDataset;
+import vphshare.driservice.domain.CloudFile;
+import vphshare.driservice.domain.CloudDirectory;
 import vphshare.driservice.providers.BlobStoreContextProvider;
 import vphshare.driservice.testing.MetadataRegistryMock;
 
 public class FewBigFilesDatasetBuilder implements DatasetGenericBuilder {
 
 	@Override
-	public ManagedDataset build(MetadataRegistryMock registry, DataSource ds) {
+	public CloudDirectory build(MetadataRegistryMock registry, DataSource ds) {
 		BlobStoreContext context = BlobStoreContextProvider.getContext(ds);
 
 		// 100 MB each file
@@ -26,16 +26,16 @@ public class FewBigFilesDatasetBuilder implements DatasetGenericBuilder {
 		try {
 			BlobStore blobstore = context.getBlobStore();
 			
-			ManagedDataset dataset = new ManagedDataset("1", "few-big-files-dataset");
+			CloudDirectory dataset = new CloudDirectory("1", "few-big-files-dataset");
 	
 			blobstore.createContainerInLocation(null, dataset.getName());
 			registry.addDataset(dataset);
 			
 			byte[] payload = new byte[filesize];
-			List<LogicalData> datas = new ArrayList<LogicalData>();
+			List<CloudFile> datas = new ArrayList<CloudFile>();
 	
 			for (int i = 0; i < numberOfFiles; i++) {
-				LogicalData item = new LogicalData("" + i);
+				CloudFile item = new CloudFile("" + i);
 				item.setName("item" + i);
 				item.setSize(payload.length);
 				List<DataSource> dsList = new ArrayList<DataSource>();
@@ -55,7 +55,7 @@ public class FewBigFilesDatasetBuilder implements DatasetGenericBuilder {
 	}
 
 	@Override
-	public void cleanup(ManagedDataset dataset, MetadataRegistryMock registry, DataSource ds) {
+	public void cleanup(CloudDirectory dataset, MetadataRegistryMock registry, DataSource ds) {
 		BlobStoreContext context = BlobStoreContextProvider.getContext(ds);
 		
 		try {

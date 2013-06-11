@@ -2,9 +2,8 @@ package vphshare.driservice.registry;
 
 import java.util.List;
 
-import vphshare.driservice.domain.LogicalData;
-import vphshare.driservice.domain.ManagedDataset;
-import vphshare.driservice.registry.AIRMetadataRegistry.DatasetCategory;
+import vphshare.driservice.domain.CloudDirectory;
+import vphshare.driservice.domain.CloudFile;
 import vphshare.driservice.registry.lobcder.LobcderMetadataRegistry;
 
 import com.google.inject.ImplementedBy;
@@ -12,18 +11,20 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(LobcderMetadataRegistry.class)
 public interface MetadataRegistry {
 
-	List<ManagedDataset> getDatasets(DatasetCategory category);
+	List<CloudDirectory> getCloudDirectories(boolean onlyManaged);
 
-	ManagedDataset getDataset(String datasetID, DatasetCategory managed);
+	CloudDirectory getCloudDirectory(String directoryId, boolean onlyManaged);
 	
-	void setAsManaged(ManagedDataset dataset);
+	void setSupervised(CloudDirectory directory);
 
-	void unsetAsManaged(ManagedDataset dataset);
+	void unsetSupervised(CloudDirectory directory);
 	
-	List<LogicalData> getLogicalDatas(ManagedDataset dataset);
+	List<CloudFile> getCloudFiles(CloudDirectory directory);
 
-	LogicalData getLogicalData(ManagedDataset dataset, String itemID);
+	CloudFile getCloudFile(CloudDirectory directory, String fileId);
 
-	void updateChecksum(ManagedDataset dataset, LogicalData item);
+	void updateChecksum(CloudDirectory directory, CloudFile file);
+	
+	void updateLastValidationDate(CloudDirectory directory, CloudFile file);
 
 }

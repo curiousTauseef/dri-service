@@ -12,8 +12,8 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import vphshare.driservice.domain.LogicalData;
-import vphshare.driservice.domain.ManagedDataset;
+import vphshare.driservice.domain.CloudFile;
+import vphshare.driservice.domain.CloudDirectory;
 import vphshare.driservice.notification.NotificationService;
 import vphshare.driservice.notification.domain.DatasetReport;
 import vphshare.driservice.registry.MetadataRegistry;
@@ -32,12 +32,12 @@ public class UpdateSingleItemChecksumJob implements Job {
 	
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		ManagedDataset dataset = (ManagedDataset) context.getJobDetail().getJobDataMap().get("dataset");
-		LogicalData item = (LogicalData) context.getJobDetail().getJobDataMap().get("item");
+		CloudDirectory dataset = (CloudDirectory) context.getJobDetail().getJobDataMap().get("dataset");
+		CloudFile item = (CloudFile) context.getJobDetail().getJobDataMap().get("item");
 		doTheTask(dataset, item);
 	}
 
-	private void doTheTask(ManagedDataset dataset, LogicalData item) {
+	private void doTheTask(CloudDirectory dataset, CloudFile item) {
 		LOG.log(INFO, "Updating checksum job for item " + dataset.getName() + ":" + item.getName());
 		try {
 			long start = System.currentTimeMillis();

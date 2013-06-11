@@ -10,14 +10,14 @@ import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.domain.Blob;
 
 import vphshare.driservice.domain.DataSource;
-import vphshare.driservice.domain.LogicalData;
-import vphshare.driservice.domain.ManagedDataset;
+import vphshare.driservice.domain.CloudFile;
+import vphshare.driservice.domain.CloudDirectory;
 import vphshare.driservice.exceptions.ResourceNotFoundException;
 
 public class DefaultValidationStrategy implements ValidationStrategy {
 
 	@Override
-	public String setup(ManagedDataset dataset, LogicalData item, DataSource ds, BlobStoreContext context) {
+	public String setup(CloudDirectory dataset, CloudFile item, DataSource ds, BlobStoreContext context) {
 		
 		// if the size is 0, then skip
 		if (item.getSize() <= 0L)
@@ -27,7 +27,7 @@ public class DefaultValidationStrategy implements ValidationStrategy {
 	}
 
 	@Override
-	public boolean validate(ManagedDataset dataset, LogicalData item, DataSource ds, BlobStoreContext context) {
+	public boolean validate(CloudDirectory dataset, CloudFile item, DataSource ds, BlobStoreContext context) {
 		
 		// if the size is 0, then skip
 		if (item.getSize() <= 0L)
@@ -39,7 +39,7 @@ public class DefaultValidationStrategy implements ValidationStrategy {
 		return valid;
 	}
 
-	protected String getChecksum(ManagedDataset dataset, LogicalData item, DataSource ds, BlobStoreContext context) {
+	protected String getChecksum(CloudDirectory dataset, CloudFile item, DataSource ds, BlobStoreContext context) {
 		
 		BlobStore blobstore = context.getBlobStore();
 		Blob blob = null;

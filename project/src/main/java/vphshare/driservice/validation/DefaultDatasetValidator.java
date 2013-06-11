@@ -14,8 +14,8 @@ import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.ContainerNotFoundException;
 
 import vphshare.driservice.domain.DataSource;
-import vphshare.driservice.domain.LogicalData;
-import vphshare.driservice.domain.ManagedDataset;
+import vphshare.driservice.domain.CloudFile;
+import vphshare.driservice.domain.CloudDirectory;
 import vphshare.driservice.exceptions.ResourceNotFoundException;
 import vphshare.driservice.notification.domain.DatasetReport;
 import vphshare.driservice.notification.domain.ValidationStatus;
@@ -35,17 +35,17 @@ public class DefaultDatasetValidator implements DatasetValidator {
 	public DefaultDatasetValidator() {}
 
 	@Override
-	public DatasetReport computeChecksums(ManagedDataset dataset) {
+	public DatasetReport computeChecksums(CloudDirectory dataset) {
 		DatasetReport report = new DatasetReport(dataset);
 		report.setStatus(VALID);
-		List<LogicalData> items = registry.getLogicalDatas(dataset);
+		List<CloudFile> items = registry.getCloudFiles(dataset);
 		LOG.log(Level.INFO, "Found " + items.size() + " items!");
 		computeChecksumsForEachLogicalData(dataset, report, items);
 		return report;
 	}
 
-	private void computeChecksumsForEachLogicalData(ManagedDataset dataset, DatasetReport report, List<LogicalData> items) {
-		for (LogicalData item : items) {
+	private void computeChecksumsForEachLogicalData(CloudDirectory dataset, DatasetReport report, List<CloudFile> items) {
+		for (CloudFile item : items) {
 			if (item.getDataSources().size() > 0) {
 				BlobStoreContext context = null;
 				try {
@@ -63,8 +63,8 @@ public class DefaultDatasetValidator implements DatasetValidator {
 	}
 
 	@Override
-	public DatasetReport validate(ManagedDataset dataset) {
-		List<LogicalData> items = registry.getLogicalDatas(dataset);
+	public DatasetReport validate(CloudDirectory dataset) {
+		List<CloudFile> items = registry.getCloudFiles(dataset);
 		DatasetReport report = new DatasetReport(dataset);
 		report.setStatus(VALID);
 
@@ -86,19 +86,19 @@ public class DefaultDatasetValidator implements DatasetValidator {
 		return report;
 	}
 
-	private void validateDatasetItems(ManagedDataset dataset, List<LogicalData> items, DatasetReport report) {
-		for (LogicalData item : items) {
+	private void validateDatasetItems(CloudDirectory dataset, List<CloudFile> items, DatasetReport report) {
+		for (CloudFile item : items) {
 			validateLogicalData(dataset, item, report);
 		}
 	}
 
-	private void validateLogicalData(ManagedDataset dataset, LogicalData item, DatasetReport report) {
+	private void validateLogicalData(CloudDirectory dataset, CloudFile item, DatasetReport report) {
 		for (DataSource ds : item.getDataSources()) {
 			validateLogicalDataOnDataSource(dataset, item, ds, report);
 		}
 	}
 	
-	private void validateLogicalDataOnDataSource(ManagedDataset dataset, LogicalData item, DataSource ds, DatasetReport report) {
+	private void validateLogicalDataOnDataSource(CloudDirectory dataset, CloudFile item, DataSource ds, DatasetReport report) {
 		BlobStoreContext context = BlobStoreContextProvider.getContext(ds);
 		try {
 			ValidationStatus status = validateLogicalData(dataset, item, ds, context);
@@ -113,12 +113,12 @@ public class DefaultDatasetValidator implements DatasetValidator {
 		}
 	}
 
-	protected ValidationStatus validateLogicalData(ManagedDataset dataset, LogicalData item, DataSource ds, BlobStoreContext context) {
+	protected ValidationStatus validateLogicalData(CloudDirectory dataset, CloudFile item, DataSource ds, BlobStoreContext context) {
 		return strategy.validate(dataset, item, ds, context) ? VALID : INTEGRITY_ERROR;
 	}
 
 	@Override
-	public DatasetReport computeChecksum(ManagedDataset dataset, LogicalData item) {
+	public DatasetReport computeChecksum(CloudDirectory dataset, CloudFile item) {
 		DatasetReport report = new DatasetReport(dataset);
 		BlobStoreContext context = BlobStoreContextProvider.getContext(item.getDataSources().get(0));
 		

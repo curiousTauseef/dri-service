@@ -11,8 +11,8 @@ import org.jclouds.blobstore.domain.StorageMetadata;
 import org.jclouds.blobstore.domain.StorageType;
 
 import vphshare.driservice.domain.DataSource;
-import vphshare.driservice.domain.LogicalData;
-import vphshare.driservice.domain.ManagedDataset;
+import vphshare.driservice.domain.CloudFile;
+import vphshare.driservice.domain.CloudDirectory;
 import vphshare.driservice.exceptions.ResourceNotFoundException;
 import vphshare.driservice.providers.BlobStoreContextProvider;
 import vphshare.driservice.testing.MetadataRegistryMock;
@@ -20,7 +20,7 @@ import vphshare.driservice.testing.MetadataRegistryMock;
 public class RealWorldDataDatasetBuilder implements DatasetGenericBuilder {
 	
 	@Override
-	public ManagedDataset build(MetadataRegistryMock registryMock, DataSource ds) {
+	public CloudDirectory build(MetadataRegistryMock registryMock, DataSource ds) {
 		
 		// Here we use LOBCDER-REPLICA dataset already present in the datasource,
 		// so we have to only register it the the metadata registry mock.
@@ -35,13 +35,13 @@ public class RealWorldDataDatasetBuilder implements DatasetGenericBuilder {
 			
 			@SuppressWarnings("unchecked")
 			PageSet<StorageMetadata> itemMetadatas = (PageSet<StorageMetadata>) blobstore.list(datasetID);
-			List<LogicalData> datas = new ArrayList<LogicalData>();
+			List<CloudFile> datas = new ArrayList<CloudFile>();
 			
 			for (StorageMetadata metadata : itemMetadatas) {
 				if (metadata.getType().equals(StorageType.BLOB)) {
 					BlobMetadata blobMetadata = blobstore.blobMetadata(datasetID, metadata.getName());
 					if (blobMetadata.getContentMetadata().getContentLength() > 0L) {
-						LogicalData item = new LogicalData(metadata.getName());
+						CloudFile item = new CloudFile(metadata.getName());
 						item.setName(metadata.getName());
 						item.setSize(blobMetadata.getContentMetadata().getContentLength());
 						List<DataSource> dsList = new ArrayList<DataSource>();
@@ -52,7 +52,7 @@ public class RealWorldDataDatasetBuilder implements DatasetGenericBuilder {
 				}
 			}
 		
-			ManagedDataset dataset = new ManagedDataset("1", datasetID);
+			CloudDirectory dataset = new CloudDirectory("1", datasetID);
 			
 			registryMock.addDataset(dataset);
 			registryMock.addLogicalDatas(dataset, datas);
@@ -64,7 +64,7 @@ public class RealWorldDataDatasetBuilder implements DatasetGenericBuilder {
 	}
 
 	@Override
-	public void cleanup(ManagedDataset dataset, MetadataRegistryMock registry, DataSource ds) {
+	public void cleanup(CloudDirectory dataset, MetadataRegistryMock registry, DataSource ds) {
 		// do nothing, we use existing dataset, so we don't want to delete it
 	}
 

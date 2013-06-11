@@ -20,6 +20,8 @@ public class LobcderConfigurationProvider implements Provider<WebResource> {
 	private String username;
 	@Inject @Named("lobcder.password")
 	private String password;
+	@Inject @Named("lobcder.read_timeout")
+	private int readTimeout;
 	
 	public LobcderConfigurationProvider() {}
 
@@ -30,6 +32,7 @@ public class LobcderConfigurationProvider implements Provider<WebResource> {
 		config.getClasses().add(JsonPlainTextEnablingProvider.class);
 
 		Client client = Client.create(config);
+		client.setReadTimeout(readTimeout);
 		client.addFilter(httpBasicAuthFilter);
 
 		return client.resource(baseURL);

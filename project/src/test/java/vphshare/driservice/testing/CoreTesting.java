@@ -7,7 +7,7 @@ import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.BlobStoreContext;
 
 import vphshare.driservice.domain.DataSource;
-import vphshare.driservice.domain.ManagedDataset;
+import vphshare.driservice.domain.CloudDirectory;
 import vphshare.driservice.notification.domain.DatasetReport;
 import vphshare.driservice.providers.BlobStoreContextProvider;
 import vphshare.driservice.providers.PropertiesProvider;
@@ -38,7 +38,7 @@ public class CoreTesting {
 		MetadataRegistryMock registry = (MetadataRegistryMock) injector.getInstance(MetadataRegistry.class);
 		
 		DatasetGenericBuilder dp = new SmallDatasetBuilder();
-		ManagedDataset dataset = dp.build(registry, ds);
+		CloudDirectory dataset = dp.build(registry, ds);
 		
 		// 2. Computing checksums
 		DatasetValidator validator = injector.getInstance(DatasetValidator.class);
@@ -53,7 +53,7 @@ public class CoreTesting {
 		assert report.isValid();
 	}
 
-	private void clearBlobstore(DataSource ds, ManagedDataset dataset) {
+	private void clearBlobstore(DataSource ds, CloudDirectory dataset) {
 		BlobStoreContext context = BlobStoreContextProvider.getContext(ds);
 		
 		try {

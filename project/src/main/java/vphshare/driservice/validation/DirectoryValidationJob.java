@@ -12,14 +12,14 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import vphshare.driservice.domain.ManagedDataset;
+import vphshare.driservice.domain.CloudDirectory;
 import vphshare.driservice.notification.NotificationService;
 import vphshare.driservice.notification.domain.DatasetReport;
 
 @DisallowConcurrentExecution
-public class DatasetValidationJob implements Job {
+public class DirectoryValidationJob implements Job {
 	
-	private static final Logger LOG = Logger.getLogger(DatasetValidationJob.class.getName());
+	private static final Logger LOG = Logger.getLogger(DirectoryValidationJob.class.getName());
 
 	@Inject
 	private DatasetValidator strategy;
@@ -28,12 +28,12 @@ public class DatasetValidationJob implements Job {
 	
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		ManagedDataset dataset = (ManagedDataset) context.getJobDetail().getJobDataMap().get("dataset");
+		CloudDirectory dataset = (CloudDirectory) context.getJobDetail().getJobDataMap().get("dataset");
 		LOG.log(INFO, "Validation job for dataset: " + dataset.getName());
 		doTheTask(dataset);
 	}
 
-	private void doTheTask(ManagedDataset dataset) {
+	private void doTheTask(CloudDirectory dataset) {
 		try {
 			long start = System.currentTimeMillis();
 			DatasetReport report = strategy.validate(dataset);
