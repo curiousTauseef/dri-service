@@ -24,10 +24,23 @@ presented in figure \ref{fig:notification-service}.
 	\label{fig:notification-service}
 \end{figure}
 
-Here we can see a tabular view of the notifications. Each notification
-initially is presented as one row. Each row shows basic information: dataset
-which
- 
+Here we can see a tabular view of the notifications. A notification
+is represented by one row and is always associated with single dataset.
+Each row presents basic information: 
+
+\begin{itemize}
+\item dataset name,
+\item notification status -- short message informing whether operation
+(compute/validate) succeded or there were some errors,
+\item execution time -- the time it took to perform the operation,
+\item time scheduled -- the time when the operation started.
+\end{itemize}
+
+Additionally, when the user is interested to see more details about the operation,
+he can just expand the row with a click. In figure \ref{fig:notification-service}
+we can see \textit{dri\_sample\_dataset} expanded and detailed information about the
+integrity errors that occured.
+
 	\section{Efficiency metrics}
 		\subsection{Network bandwidth}
 		\subsection{Error detection rate}
