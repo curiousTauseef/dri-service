@@ -7,7 +7,19 @@ From cryptographic hash-based mechanisms that enable corruption discovery, to
 replication and error-correcting codes for data recovery, to security
 mechanisms preventing malicious data corruption. However, emerging trends in IT
 solutions, as cloud computing, put new challenges in this area. The following
-chapter presents the state of the art.
+chapter presents the state of the art.\\
+
+This chapter presents an introduction to a~set of topics connected with 
+data integrity in cloud storage. In the first section we present
+general methods and tools for ensuring data integrity which form
+fundamanetal building blocks for more advanced methods. Further, we
+describe cloud storage model, we focus on its origins and advantages, but
+also discuss limitations of its interface and SLA contracts. In the last
+section we dive into the subject of assuring data integrity in cloud
+storage and present some emerging methods: proofs of retrievability (PORs)
+and data integrity proofs (DIPs).
+
+
 
 	\section{General methods and tools for ensuring data integrity}
 	\label{classic-integrity-methods}
@@ -402,20 +414,23 @@ in the following steps:
 	corruption.
 \end{enumerate}
 
-The resulting modified file $F^{*}$ is presented schematically in figure 
-\ref{fig:por-modified-file}.\\
+The graphical presentation of the process is depicted in figure \ref{fig:por-modified-file}.\\
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\textwidth]{images/modified-file.png}
-	\caption{File $F$ after MAC-based POR modifications \cite{por}}
+	\includegraphics[width=0.8\textwidth]{images/por-schematic.png}
+	\caption{Schematic presents POR based file encoding. Firstly (1), the file is divided into
+	$b$ blocks and error correcting codes are applied to each of the block. Then (2), the
+	parity bits are appended and the resulting file is encrypted. Finally (3,4), $m$ blocks of the encrypted
+	file are selected, their MACs computed and appended to the file in permuted sequence. The resulting
+	file is stored in archive \cite{por}.}
 	\label{fig:por-modified-file}
 \end{figure}
 
 In the same paper \cite{por}, Juels and Kaliski proposed a sentinel-based POR
 scheme. Similarily to the MAC-based approach it utilizes ECCs, but rather than
 chosing MAC blocks it embeds sentinels in random positions in $F$, sentinels
-being randomly constructed values. It is important that sentinels shall be
+being randomly constructed values. It is important that sentinels shall be 
 indistinguishable from the encrypted file contents. The scheme consists of the
 following steps:
 
@@ -477,26 +492,24 @@ consists of the following steps:
 	blocks that each are $m$ bits length. Then, for each data block, a set of
 	$k$ out of $m$ bits are selected. The value of $k$ is in the choice of the
 	verifier and is a secret known only to him. Therefore, we get $n*k$ bits in
-	total (see figure \ref{fig:dip-step1}).
-	\begin{figure}[h!]
-		\centering
-		\includegraphics[width=0.8\textwidth]{images/dip-step1.png}
-		\caption{Bits generation in DIP scheme \cite{dip}}
-		\label{fig:dip-step1}
-	\end{figure}
-
+	total.
 	\item \textbf{Encrypting the metadata}: each of the metadata from the data
 	blocks, is encrypted by using a suitable algorithm and concatenated.
 	\item \textbf{Appending the metadata}: all the metadata are appended to the
-	file $F$, however, they can be also stored in the verifier
-	(see figure \ref{fig:dip-step2}).
-	\begin{figure}[h!]
-		\centering
-		\includegraphics[width=0.8\textwidth]{images/dip-step2.png}
-		\caption{Resulting file in DIP scheme \cite{dip}}
-		\label{fig:dip-step2}
-	\end{figure}
+	file $F$, however, they can be also stored in the verifier.
 \end{itemize}
+
+The graphical presentation of the process is depicted in figure \ref{fig:dip-schematic}.\\
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{images/dip-schematic.png}
+	\caption{Schematic presents DIP based file encoding. Firstly (1), the file is
+	divided into $n$ blocks of equal size and $k$ randomly chosen bits are selected
+	out of each block. Then (2), concatenated bits from all of the blocks are encrypted
+	and appended to the file $F$ \cite{dip}.}
+	\label{fig:dip-schematic}
+\end{figure}
 
 To verify $F$ integrity, the verifier utilizes challenge-response mechanism. In
 each challenge, it verifies a~single block $i$ specifing the positions of the
@@ -514,4 +527,18 @@ Such data acceses are performed in separate HTTP requests in the current
 cloud storages (see section \ref{cloud-model}), which is practically
 infeasible.\\ 
 
-	\section{Conclusions}
+\section{Summary}
+In this chapter an important topics regarding data integrity and cloud storage were presented.
+General methods and tools for ensuring data integrity such as cryptographic hash functions,
+error correcting codes and message authentication codes were discussed. They form a set of
+fundamental building blocks and patterns used in more advanced methods. Its understanding 
+is crucial in further discussion on data integrity throughout this thesis. Further, the
+overview of cloud storage model was presented. We focused on describing its origins in connection
+with advantages which it brings in numerous applications. The discussion also includes the
+high-level description of cloud storage interface and SLA contracts. We also stress the contraints
+and limitations of moving the data to the cloud. Shortly, recent cloud providers failure reports
+and the best-effort SLA contracts question the applicability of cloud storage in areas
+such as medical care and flight services. In the last section, we extensively discuss current
+approaches to data integrity in the cloud. We mainly focused on two developing schemes: proofs
+of retrievability (PORs) and data integrity proofs (DIPs), but also mention other solutions and
+improvements. 

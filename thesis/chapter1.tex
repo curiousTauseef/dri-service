@@ -88,7 +88,7 @@ Managing data availability and integrity of data in cloud storage environment is
 subject of this thesis. As we mentioned above, to provide a solid way of assuring data
 reliability we must address both data corruption detection and recovery. The idea is
 to, apart from the internal cloud provider replication, replicate the data over multiple
-cloud provider resources, continuously monitor its integrity and proactively restore corrupted
+cloud provider resources, continuously monitor its integrity and enable possibility to restore corrupted
 entities from existing replicas. In case of irreparable corruption we should notify the
 owner about the data problem. Replicating the data over cloud providers will build another
 abstraction layer on top of cloud service and will allow to use them interchangeably in so
@@ -172,17 +172,48 @@ as well as receive notifications about data integrity violations.
 \end{itemize}
 
 
-
-
 \section{Objectives of this work}
 
-Summing up the above considerations, the objective of this thesis is to create a tool
-in the form of a service that will:
+As it was mentioned in the previous sections, there is a~need for creation of a~service that
+will provide monitoring of data reliability and integrity (DRI) in federation of cloud storage
+resources, in particular within VPH-Share Cloud Platform environment. The high-level objective of this
+thesis is to design and implement such service that:
 
 \begin{enumerate}
-\item continuously and periodically monitor the integrity of the data stored in the
-federation of cloud storage resources,
-\item proactively restore discovered data corruption from the replicas in other cloud
-providers,
-\item notify the data owner(user) about discovered data corruption in advance of data retrieval. 
+\item efficiently and  periodically monitor the integrity of the federated cloud storage,
+\item notify the user about discovered data corruption in advance of data retrieval, 
+\item provide possibility to restore corrupted data from replicas in other cloud providers.
 \end{enumerate}
+
+In this thesis, by efficient data integrity validation we mean network efficiency. Our goal is to minimize network
+traffic required to validate a~file, while still be able to detect corruption on acceptable
+level of probability.\\
+
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{images/DRI-objectives.png}
+	\caption{DRI service is a~stateless web service within service-based VPH-Share Cloud Platform.
+	Its main objective is periodical validation of data availability and integrity stored on
+	federated cloud storage. All the integrity metadata is stored in metadata registry, while data access
+	is perfomed via common federated cloud storage access layer to multiple cloud providers. Corruption
+	or unavailability violations are sent to the user via Notification Service component.}
+	\label{fig:dri-objectives}
+\end{figure} 
+
+At this point, the architecture of DRI service can be presented as a separate component within service-based 
+environment that depends on other VPH-Share Cloud Platform core components visible in figure \ref{fig:dri-objectives}.
+Conceptually, DRI service is a part of service-based VPH Cloud Platform architecture and provides
+a~stateless web interface that enables managing data reliability (see figure \ref{fig:dri-objectives}).
+To fullfill its responsibilities
+DRI depends on a~number of other services. All of the service metadata regarding integrity checksums
+and statuses, replication policies and federated cloud access is stored externally in metadata registry.
+Data integrity and replication is performed on a~multiple cloud providers via common federated cloud
+storage access layer. User notifcations are sent via external notification service.\\
+
+DRI considers a~concept of dataset -- simply a set of files. Upon tagging dataset as managed DRI triggers
+integrity checksums computation and stores them in metadata registry. As long as dataset remains managed
+a~periodical availability and integrity verification takes place. When data corruption is detected the
+user is notified about the errors via notification service and can restore the content from other replicas.
+
+
