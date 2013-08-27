@@ -6,10 +6,8 @@ which specifies requirements under which DRI operates. Then it defines its
 design and interfaces with other parts of the system. At the end, the core 
 validation heuristic algorithm is presented.
 
-	\section{Overview}
-
-	\section{Data and Compute Cloud Platform context}
-	\label{cloud-platform}
+\section{Data and Compute Cloud Platform context}
+\label{cloud-platform}
 VPH-Share Data and Compute Cloud Platform project aims to design, implement,
 deploy and maintain cloud storage and compute platform for application deployment
 and execution. The tools and end-user services within the project will enable
@@ -18,28 +16,49 @@ workflows on top of the Cloud and high-performance computing infrastructure.
 In order to fulfill this goal, Cloud Platform will be delivered as consistent
 service-based system that enables end users to deploy the basic components of
 the VPH-Share application workflows (known as Atomic Services) on the available
-computing resources and then enact workflows using these services. The general
-overview of Cloud Platform architecture with interactions to other parts of
-the VPH-Share is illustrated in figure \ref{fig:vph-architecture}.
+computing resources and then enact workflows using these services.
+
+\subsection{VPH-Share groups of users}
+\label{vph-users}
+VPH-Share project identifies three specific groups of users \cite{vph-deliverable-2-2}:
+
+\begin{enumerate}
+\item \textbf{Application providers} -- people responsible for developing and
+installing scientific applications and software packages, typically IT experts
+who collaborate with domain scientists and translate their requirements into
+executable software.
+\item \textbf{Domain scientists} -- actual researchers of the VPH community who
+stand to benefit from access to scientific software packages provided by the 
+platform. They will require the ability to access the applications in a~secure
+and convenient manner via graphical interfaces provided on top of Cloud Platform.
+\item \textbf{System administrators} -- priviledged users with ability to manipulate
+and assign the available hardware resources to the project and define security/access
+policies for other user groups. They will also make sure that the platform remains
+operational by taking advantage of notification mechanisms built into the system.
+\end{enumerate}
+
+\subsection{Cloud platform architecture overview}
+
+The general overview of Cloud Platform architecture with interactions to other parts of
+the VPH-Share is illustrated in figure \ref{fig:vph-architecture}. Master UI (web portal) enables
+coarse-grained invocations of the underlying core services to the specified groups of
+end-users described in section \ref{vph-users}. The Cloud Platform itself will be deployed on
+available cloud and physical resources.
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth]{images/vph-architecture.png}
-	\caption{Cloud Platform architecture and its relation to other project
+	\caption{Cloud Platform architecture. 
 	components}
 	\label{fig:vph-architecture}
 \end{figure}
 
-The end-user interface for the Cloud Platform will be implemented as Master UI
-(web portal) enabling coarse-grained invocations of the underlying
-core services (more in subsection \ref{master-ui}). The Cloud Platform itself
-will be deployed on available cloud and physical resources.
-
-Data storage is an essential functionality of the Platform. It is achieved by
+Cloud Platform interally consists of many loosly-coupled components deployed as Atomic Service
+Instances (see section \ref{vph-atomic-service}). Data storage is an essential functionality of
+the Platform. It is achieved by
 federated cloud storage which makes use of both, cloud and other storage
 resources with redundancy and is accessible through common data layer --
-LOBCDER service. Further description in subsection 
-\ref{federated-cloud-storage}. Atmosphere Internal Registry (AIR) serves as
+LOBCDER service. Atmosphere Internal Registry (AIR) serves as
 centralised metadata storage component which enables integration between 
 loose-coupled services and is presented in subsection \ref{air}.
 
@@ -49,10 +68,8 @@ speed). To fulfill this requirement, a Data Reliability and Integrity (DRI)
 service was designed, implemented and deployed as one of the core Cloud
 Platform's services -- which is a primary topic of this thesis.\\
 
-MORE ON DATA VALIDATION, ITS IMPORTANCE, DIFFICULTIES AND SHORTCOMINGS HERE.
-
-		\subsection{Atmosphere Internal Registry}
-		\label{air}
+\subsection{Atmosphere Internal Registry}
+\label{air}
 The Atmosphere Internal Registry (hereafter also referred to as the Atmosphere
 Registry, the AIR component or simply the Registry) is a core element of the 
 Cloud Platform, delivering persistence capabilities. Its components and
@@ -85,8 +102,8 @@ From DRI perspective, AIR will store necessary metadata:
 
 Such design enables us to implement DRI as stateless service.
 
-		\subsection{Federated cloud storage}
-		\label{federated-cloud-storage}
+\subsection{Federated cloud storage}
+\label{federated-cloud-storage}
 Data storage is an essential part of VPH-Share Cloud Platform. The increasing
 popularity of cloud storage services due to high quality-cost ratio is leading
 more organisations to migrate and/or adapt their IT infrastructure to operate
@@ -117,14 +134,33 @@ has to be designed to actively monitor data integrity -- DRI.\\
 Access to the federated cloud storage is via common access layer -- LOBCDER
 service -- served by WebDAV protocol. However, DRI service will access
 cloud storage services directly to take advantage of cloud federation and
-to omit redundant LOBCDER overhead.\\
+to omit redundant LOBCDER overhead.
 
-HERE WILL BE A PICTURE ILLUSTRATING HOW LOBCDER AND DRI WORKS ON CLOUD
-FEDERATION !!!
-		\subsection{Master UI}
-		\label{master-ui}
+\subsection{Atomic Service}
+\label{atomic-service}
+In order to ensure smooth deployment for application developers, Cloud Platform
+creates a~concept of Atomic Service. It can be simply described as a~VM on which
+core components of the VPH-Share-specific application software have been installed,
+wrapped as a~virtual system image and registered for usage within the platform. The
+process of creating new atomic service is depicted in figure \ref{fig:atomic-service}.
+Typical application software installations provided by Atomic Service is federated
+storage access, web service command wrapper and web service security agent. Additionally,
+Cloud Platform takes care of instantiating various Atomic Services. Atomic Service
+Instance is a~specific atomic service deployed on computing resources and providing
+VPH-Share application functionality through a~web service (SOAP or REST) interface.\\
 
-	\section{DRI data model}
+Services providing core functionality within VPH-Share will be also deployed as atomic
+service instances. 
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{images/vph-atomic-service.png}
+	\caption{The process of creating and instatiating new Atomic Service}
+	\label{fig:atomic-service}
+\end{figure}
+
+
+\section{DRI data model}
 The Cloud Platform concerns itself primarily with access to binary data, 
 especially via file-based interface. Managed dataset represents a single entity
 that can be managed. At its core, it consists of a~selection of
@@ -139,7 +175,7 @@ tagged for automatic data integrity monitoring (DRI).
 	\label{fig:managed-dataset}
 \end{figure}
 
-		\subsection{Metadata schema}
+\subsection{Metadata schema}
 Each managed dataset may consist of an arbitrary number of files (logical 
 data) and can be stored on one or more storage resources (data source).
 Specific security constraints can be attached to data items, i.e. it cannot be
@@ -185,7 +221,7 @@ While this schema is expected to cover all the requirements addressed in the
 DRI service, we foresee that additional metadata can be added later without
 affecting already stored.
 
-		\subsection{Tagging datasets}
+\subsection{Tagging datasets}
 Before automatic verification of managed datasets can take place, it is first
 necessary to tag specific data as subject for management. It is foreseen that
 the DRI component will involve a user interface extension (portlet-based) to
@@ -196,8 +232,9 @@ of new managed datasets consisting of selected files.\\
 In addition to UI based tagging, the DRI component provides API-level access
 for the same purpose, whenever a VPH-Share application (or workflow) needs to
 tag specific data as a managed dataset.
-	\section{Requirements}
-	\label{requirements}
+
+\section{Requirements}
+\label{requirements}
 VPH Cloud Platform puts strong empasis on data storage and availability and
 integrity assurance, as it is mostly static medical data of great importance.
 To fulfill this goal, it takes advantage of outsourcing data storage. To
@@ -210,7 +247,8 @@ architecture and potential. This section describes these requirements.\\
 	
 Cloud Platform requirements can be divided into two groups: functional and
 non-functional.
-		\subsection{Functional}
+
+\subsection{Functional}
 Functional requirements are related to the core system capabilities that it
 is desired to ensure. These are the following:
 
@@ -225,7 +263,8 @@ is desired to ensure. These are the following:
 	replication operations has to be performed asynchronously and the results
 	have to presented to the user via suitable notification service.
 \end{itemize}
-		\subsection{Nonfunctional}
+
+\subsection{Nonfunctional}
 Nonfunctional requirements are related to the quality of the core system
 capabilities, as it is desired that validation and replication mechanisms are
 performed efficiently. These are the following:
@@ -243,7 +282,8 @@ performed efficiently. These are the following:
 	also desired for the designed validation protocol, to be configurable, to
 	be able to adjust error-detection probability.
 \end{itemize}
-	\section{Architecture}
+
+\section{Architecture}
 The DRI Runtime is responsible for enforcing data management policies. It keeps
 track of managed components and periodically verifies the accessibility and
 integrity of the managed data. It operates autonomously as well as on request.
@@ -264,7 +304,7 @@ the DRI Runtime invokes a notification service to issue a warning message
 to subscribed system administrators (typically, the user defined as the 
 dataset's owner).\\
 
-		\subsection{Overview}
+\subsection{Overview}
 The architecture of the DRI service was mostly influenced by the Cloud Platform
 environment (section \ref{cloud-platform}) and the requirements and challenges
 it introduces (section \ref{requirements}). Figure \ref{fig:dri-architecture}
@@ -291,8 +331,8 @@ its data validation algorithm.
 
 MORE HERE HERE HERE
 
-		\subsection{Interface and API}
-		\label{dri-interface}
+\subsection{Interface and API}
+\label{dri-interface}
 As hinted upon in the preceding sections, DRI provides end-user interfaces
 in the form of a~Master UI portlet, as well as an API implemented by the
 Runtime service, where DRI features may be invoked directly by other VPH-Share
@@ -562,7 +602,8 @@ of size smaller than $threshold$ is provided by classic entire-file SHA-256
 checksum. The value of $threshold$ parameter will be established empirically
 based on performance test results presented in chapter \ref{cha:testing}.
 
-		\subsection{Algorithm analysis}
+\subsection{Algorithm analysis}
+\label{algorithm-analysis}
 Validation algorithm described in the previous subsection is rather simple in 
 its design, but poses properties that make it practically feasible:
 
@@ -636,4 +677,15 @@ performance evaluation with varying values of the parameters $n$, $k$ and
 $threshold$) and in the real cloud storage environment is presented in chapter
 \ref{cha:testing}.
 
-		\subsection{Comparison with other solutions}
+\subsection{Summary}
+This chapter presented in-depth the design and architecture of data reliability and
+integrity (DRI) service. The architecture of the VPH-Share Cloud Platform was introduced
+to provide a~context in which DRI is developed and that mostly influenced its requirements.
+Given that, we determined the DRI data model and formulated its -- functional and non-functional
+-- requirements. The API of the service tries to reflect all of the identified use cases.\\
+
+At the end, we presented the design of the network efficient algorithm that
+tries to take cloud storage limitations into account and provide means of network efficient
+corruption detection on some level of probability. The concept is based on POR and DIP schemes presented in section
+\ref{cloud-integrity-approaches}. Finally, we presented the equations describing the algorithm features.
+

@@ -247,6 +247,16 @@ simplest solution would be to run a couple of its instances and provide requests
 balancing between them. Another possibility, as DRI uses Quartz for job scheduling and
 execution, would be to build Quartz cluster and make DRI submit its validation jobs
 to it. Lastly, single dataset (or even single file) validation is completely independent
-from one another, meaning that scalability issues can be easily addressed.\\
+from one another, meaning that scalability issues can be easily addressed.
 
-\section{Conclusions}
+\section{Summary}
+This chapter presented the way DRI service was implemented based on its design and
+requirements described in the previous chapter. It outlines the choice of Java technology stack
+and additional libraries and justifies it. JClouds library helped us to address one of the
+main implementation challenges to abstract cloud storage access and get rid of cloud provider
+interface differences. Additionally, JAX-RS, Guice and Quartz enabled us to create the skeleton
+of DRI implementation relatively fast and without complications. At the end we also discuss
+the possiblitity to use DRI outside of VPH-Share platform. To achieve this, one has to reimplement
+the abstract layer through which DRI accesses external services. On the other hand, scalability can
+be easily achieved by small modifications through running multiple instances of DRI service and
+pinning datasets periodical validations to concrete instances.

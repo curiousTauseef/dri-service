@@ -314,7 +314,8 @@ stored data. The data has to be downloaded in order to perform computation. It
 makes present data integrity monitoring protocols impractical and inefficient,
 because they assume computation capability on the prover's side.
 
-	\section{Approaches to data integrity in cloud storage}
+\section{Approaches to data integrity in cloud storage}
+\label{cloud-integrity-approaches}
 One of the fundamental goals of cryptography is data integrity protection.
 Primitives such as digital signatures and message-authentication codes (MACs),
 described in section \ref{classic-integrity-methods}, were created to allow
@@ -386,7 +387,7 @@ form cloud-of-clouds.\\
 In the following subsections we examine exhaustively a couple of schemes
 mentioned above. We present their architecture, advantages and limitations.
 
-		\subsection{Proofs of retrievability}
+\subsection{Proofs of retrievability}
 In a POR \cite{por, por2} protocol, a file is encoded by a client before
 deploying it on cloud storage for archiving. Then, it employs
 bandwidth-efficient challenge-response scheme to probabilistically guarantee
@@ -479,7 +480,7 @@ request. As many such accesses are performed per each file, it would be
 impractical (except for large files, for which hundreds of short HTTP requests
 would be faster than downloading the entire file).
 
-		\subsection{Data integrity proofs}
+\subsection{Data integrity proofs}
 Data integrity proof (DIP) \cite{dip} is a protocol, which just like POR, aims
 to assure that the remote archive poses the data. Unlike POR schemes, it does
 not involve any modifications to the stored file. The client before storing
