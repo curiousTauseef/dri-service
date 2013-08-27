@@ -9,7 +9,7 @@ mock has been created. Finally, in the following sections, the subsequent servic
 are evaluated.
 
 
-\section{Case study}
+\section{Test case scenario}
 \label{case-study}
 As a~case study for DRI evaluation we designed a~test scenario consisting of multiple
 data manipulation steps within VPH-Share project. Thanks to administration rights to the
@@ -100,7 +100,7 @@ either they are invalid or unavailable. For instance, the expanded
 -- \textit{earth.jpg} and \textit{moon.jpg} -- and the \textit{time-machine.txt}
 is corrupted.
 
-\section{Functional requirements evaluation}
+\section{Requirements evaluation}
 A key aspect of the DRI service is to meet its requirements within Cloud
 Platform, which were listed in section \ref{requirements}. In the prototype
 phase, we focus on data validation. As project continues, data
@@ -110,12 +110,40 @@ and on-request data validation and notifies about any integrity or availability
 errors. It can be used according to the REST interface described in chapter
 \ref{cha:architecture}.
 
-\subsection{Evaluation of periodic and on-request data validation}
-The evaluation of DRI data validation mechanism is based on the test scenario described
-in section \ref{case-study}. It was performed on DRI instance deployed in production
-environment of VPH-Share project.
+\subsection{Essential data validation mechanisms}
+The current state of the DRI service provides a~flexible set of methods to perform
+data integrity validation activities. At its core, it periodically and on request
+performs data validation of the datasets tagged as managed. From the user perspective, it
+supports tagging (untagging) given dataset as managed and provides various notification
+messages about the performed operation.\\
+
+The execution of test case scenario is presented in figure \ref{fig:test-scenario-results}.
+Each of the operation perfomed against DRI interface represents a~single row. The
+\textit{test\_dataset} was successfully tagged as managed and no integrity errors occured during the
+first validation pass. After manually deleting and modyfing three files within the dataset, the second
+validation pass discovered data integrity errors. However, only partial changes to the
+\textit{earth.jpg} file were not discovered. Hopefully, the third validation invocation
+managed to discover all of the integrity issues that were maliciously introduced during
+the test scenario. 
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{images/test-scenario-results.png}
+	\caption{DRI service test scenario evaluation: intially a~sample dataset with content
+	was created. Upon successfully tagging it as managed no integrity errors are detected.
+	After malicious files modification DRI was able to detect data corruption and unavailability.
+	However, not every content change was discovered in every validation pass.}
+	\label{fig:test-scenario-results}
+\end{figure}
 
 
+\subsection{Data replication}
+In the VPH-Share Cloud Platform prototype phase, the emphasis is put on providing data
+availability and integrity. As project continues, data replication mechanisms will be developed
+with focus on providing data replication over multiple cloud storage providers as well as on-demand
+corruption recovery from existing replicas.
+
+\subsection{Configurability and scalability}
 
 
 \section{Conclusions and results}
