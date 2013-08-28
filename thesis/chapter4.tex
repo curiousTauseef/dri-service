@@ -98,8 +98,12 @@ DRI Service components implementation technologies are depicted in figure
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.5\textwidth]{images/dri-impl-technologies.png}
-	\caption{DRI Service implementation technologies of its components: 
-	JAX-RS REST, JClouds, Quartz, Jersey REST client}
+	\caption{DRI Service implementation technologies of its modules. REST API
+	interface is provided using JAX-RS technology. Federated data access is built
+	on JClouds library which abstracts the complexity of accessing different cloud
+	storage providers. Jersey REST client library eases the integration with REST
+	based services on which DRI depends. Finally, in batch execution DRI utilizes
+	Quartz library.}
 	\label{fig:dri-impl-technologies}
 \end{figure}
  

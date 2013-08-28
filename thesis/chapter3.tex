@@ -48,13 +48,18 @@ available cloud and physical resources.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth]{images/vph-architecture.png}
-	\caption{Cloud Platform architecture. 
-	components}
+	\caption{VPH-Share Platform architecture. Specified groups of users are provided with
+	functionalities of Cloud Platform through Master user interface (UI) which enables
+	coarse-grained invocations of the underlying core services. Data and Compute Cloud
+	Platform consists of loosly-coupled services responsible for exposing different platform
+	functionalities such as federated storage access (T2.4), data integrity monitoring
+	(2.5) etc. Services are deployed as Atomic Service instances (simply a~VM with add-ons).
+	The platform is built on top of cloud computing resources.}
 	\label{fig:vph-architecture}
 \end{figure}
 
 Cloud Platform interally consists of many loosly-coupled components deployed as Atomic Service
-Instances (see section \ref{vph-atomic-service}). Data storage is an essential functionality of
+Instances (see section \ref{atomic-service}). Data storage is an essential functionality of
 the Platform. It is achieved by
 federated cloud storage which makes use of both, cloud and other storage
 resources with redundancy and is accessible through common data layer --
@@ -88,7 +93,10 @@ element of the platform.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.7\textwidth]{images/air-architecture.png}
-	\caption{Components and interactions of AIR component}
+	\caption{The overview of Atmosphere Internal Registry (AIR) component.
+	Many VPH-Share core components store and access various metadata in AIR.
+	It provides REST API interface for these components, as well as web-based
+	html service to enable VPH-Share users to browse the metadata via Master UI.}
 	\label{fig:air-architecture}
 \end{figure}
 
@@ -171,7 +179,10 @@ tagged for automatic data integrity monitoring (DRI).
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.5\textwidth]{images/managed-dataset.png}
-	\caption{Schematic representation of a~VPH-Share Managed Dataset}
+	\caption{Schematic representation of VPH-Share managed dataset. Managed
+	dataset consists of an arbitrary number of files (logical data) that are stored
+	on one or more storage resources. The metadata regarding managed dataset is persisted
+	in AIR.}
 	\label{fig:managed-dataset}
 \end{figure}
 
@@ -186,7 +197,11 @@ policy (management policy). The schema is depicted in the figure
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.8\textwidth]{images/data-model.png}
-	\caption{DRI metadata schema}
+	\caption{DRI service metadata schema. It generally reflects the concept of
+	managed dataset presented in figure \ref{fig:managed-dataset}. Managed dataset
+	consists of arbitrary number of logical data and is deployed on one or more
+	data sources. Logical data can have security contraints attached to it. Additionally,
+	a management policy can be attached to every managed dataset.}
 	\label{fig:data-model}
 \end{figure}
 
@@ -313,7 +328,13 @@ presents its overview.\\
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.8\textwidth]{images/dri-architecture.png}
-	\caption{DRI architecture overview}
+	\caption{DRI architecture overview. It exposes REST API interface for other
+	Cloud Platform components, mostly Master UI. The design is divided into
+	modules that are responsible for providing separate functionality.
+	ValidationExecution module is responsible for periodical as well as on-request
+	based validation of datasets. All of the integrity metadata is provided
+	through MetadataAccess module. The complexity of accessing different cloud
+	storage providers is abstracted with FederatedDataAccess layer.}
 	\label{fig:dri-architecture}
 \end{figure}
 
@@ -328,8 +349,6 @@ ValidationExecutor represents the core of the DRI. Its objective is to manage
 all the validation tasks, both periodical and requested by user. For
 each logical data it invokes ValidationStrategy component to perform
 its data validation algorithm.
-
-MORE HERE HERE HERE
 
 \subsection{Interface and API}
 \label{dri-interface}
@@ -404,7 +423,8 @@ of this, the DRI API supports the following operations:
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth]{images/dri-interface.png}
-	\caption{DRI Service interface}
+	\caption{DRI Service interface. It provides flexible set of methods to
+	manipulate integrity monitoring of datasets.}
 	\label{fig:dri-interface}
 \end{figure}
 

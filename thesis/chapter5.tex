@@ -144,6 +144,22 @@ with focus on providing data replication over multiple cloud storage providers a
 corruption recovery from existing replicas.
 
 \subsection{Configurability and scalability}
+Upon the deployment of DRI service it is provided with configuration file where administrator
+can specify core parameters. The main two of them are validation period and validation algorithm
+parameters -- $k$ and $n$. During test scenario we were able to set validation period to $30 min$
+and observer that all of the datasets tagged as managed are periodically validated with this period.
+With $k$ and $n$ parameters we could adjust the compromise between network overhead and
+error detection rate. Configuration sets these parameters globally for all datasets. It could be
+beneficial improvement to add the possibility to specify them per managed dataset upon tagging it
+as managed -- via \textit{management policy}.
 
 
-\section{Conclusions and results}
+\section{Summary}
+This chapter presented the evaluation of the DRI service against the specified requirements. A~special
+test scenario was designed to perform this. It aims to cover most of the core functionalities that
+DRI should provide. In order to present the results of the evaluation a~simple mock of notification
+service in form of a~web page was created. Due to on-going developement of VPH-Share Cloud Platform
+the evaluation was successful only partially. At the current stage of the project DRI provides all
+the necessary functionalities regarding validation of data availability and integrity, however it still
+lacks data replication mechanisms. This issue is going to be addressed in the second phase of the
+project.
