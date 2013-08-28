@@ -54,7 +54,7 @@ available cloud and physical resources.
 	Platform consists of loosly-coupled services responsible for exposing different platform
 	functionalities such as federated storage access (T2.4), data integrity monitoring
 	(2.5) etc. Services are deployed as Atomic Service instances (simply a~VM with add-ons).
-	The platform is built on top of cloud computing resources.}
+	The platform is built on top of cloud computing resources \cite{vph-deliverable-2-2}.}
 	\label{fig:vph-architecture}
 \end{figure}
 
@@ -96,7 +96,8 @@ element of the platform.
 	\caption{The overview of Atmosphere Internal Registry (AIR) component.
 	Many VPH-Share core components store and access various metadata in AIR.
 	It provides REST API interface for these components, as well as web-based
-	html service to enable VPH-Share users to browse the metadata via Master UI.}
+	html service to enable VPH-Share users to browse the metadata via Master UI
+	\cite{vph-deliverable-2-2}.}
 	\label{fig:air-architecture}
 \end{figure}
 
@@ -163,7 +164,8 @@ service instances.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.8\textwidth]{images/vph-atomic-service.png}
-	\caption{The process of creating and instatiating new Atomic Service}
+	\caption{The process of creating and instatiating new Atomic Service
+	\cite{vph-deliverable-2-2}.}
 	\label{fig:atomic-service}
 \end{figure}
 
@@ -182,7 +184,7 @@ tagged for automatic data integrity monitoring (DRI).
 	\caption{Schematic representation of VPH-Share managed dataset. Managed
 	dataset consists of an arbitrary number of files (logical data) that are stored
 	on one or more storage resources. The metadata regarding managed dataset is persisted
-	in AIR.}
+	in AIR \cite{vph-deliverable-2-2}.}
 	\label{fig:managed-dataset}
 \end{figure}
 
@@ -576,7 +578,7 @@ phases:
 	chunk. Then, a set of $n$ checksums is stored in metadata registry for
 	further use.
 	\item \textbf{validation} -- takes place on every dataset validation 
-	request. During this phase, the file is again divided into $n$ chunks and
+	request. During this phase, the file is again divided into $n$ chunks of size $F \over n$ and
 	pseudorandom number generator selects $k$ out of $n$ chunk indexes that are
 	downloaded and their checksums computed. Then, computed checksums are
 	compared with original ones stored in metadata registry.

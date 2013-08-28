@@ -1,4 +1,112 @@
-\chapter{Conclusions and future work}
+\chapter{Summary and future work}
 \label{cha:conclusions}
-	\section{DRI tool evaluation}
-	\section{Future work}
+
+The main objective of this thesis was creation of a~data reliability
+and integrity (DRI) service that monitors the availability and integrity
+of data stored on heterogeneous cloud storage resources. As it was shown,
+the resulting advantages of moving the data to the cloud suggest that widespread
+use of cloud storage seems inevitable. However, this new approach is not free
+from dangers. Recent cloud provider failure and malicious corruption reports
+\cite{amazon-downtime1, amazon-downtime2, gmail-downtime, docs-downtime} 
+show that
+one cannot fully entrust the data to the cloud provider. But cloud storage brings
+new challenges for ensuring data security. Therefore, computer industry seeks for
+innovative tools and methods that could lower the risk associated with the current
+trend. The idea oscillates around harnessing multiple cloud storage providers
+and replicate the data among them. This approach creates a~new layer of abstraction
+in accessing the data -- cloud storage federation. While storing many copies of 
+data on different cloud providers significantly reduces the risk of data loss, it
+is still needed to detect data problem. Hash-based checksums and error correcting codes
+are the industry standard methods of ensuring data integrity. However, cloud storage
+introduces obstacles against applying them, because data is stored remotely and cloud
+providers charge fees for outbound network transfer. As a~result, for instance, 
+validating a~file by computing its SHA-512 hash based on the full content of it can
+significantly raise operational costs. Additionally, network latency and throughput
+affect the data access.\\
+
+In this work different approaches for ensuring data integrity in cloud storage were
+presented. On-going research effort focuses on selectively validating the content of
+data and detecting corruption only on some level of probability. Discussed validation
+schemes propose different improvements of the outlined approach such as encrypting
+the content of data or they assume the existence of the element that performs computation
+on data without transfering it to the verifying peer. However, in the scope of VPH-Share
+project, the data stored on remote cloud resources cannot be altered, as well as no
+computing element exist on cloud provider site.\\
+
+As a~result, in this thesis we aim to address the above mentioned issues with
+creation of a~service that is periodically monitoring the availability and integrity
+of data and notifies the owner in case of errors. It was successfully designed,
+implemented and deployed in production environment of VPH-Share project. However,
+at this stage of project, DRI is a~work in progress and not all of its requirements
+outlined in VPH-Share deliverable are already met. The core functionality is up and
+running, but data replication mechanisms are scheduled for the second phase of the
+project. Nevertheless, this thesis objectives have been evaluated and the results
+of executing a~test scenario were outlined in the chapter devoted to verification
+and testing.
+
+\section{Future work}
+While working on this thesis, we identified some ideas and tasks that are connected
+to this work, but were not taken into consideration. However, they could be worth
+continuation, so we outline them here. We divided them in two groups. The first presents
+possibilities of enhancements and improvements to this work:
+
+\begin{enumerate}
+\item Design and implementation of automatic data replication module. The idea
+is to take advantage of and combine both data replication and validation. As soon as
+DRI discovers integrity errors, it will recover from them automatically by restoring
+the data from other, non-affected replicas. During data recovery, corrupted replica
+should be excluded from set of replicas available to VPH users.
+
+\item Investigation and implementation of possible improvements to the validation
+algorithm. At the time of writing this thesis, cloud storage interfaces are of
+limited flexibility. Every noncontiguous block of data has to be requested with 
+separate HTTP request. It can significantly affect the efficiency and throughput
+of validation algorithm. In the current implementation, DRI asynchronously sends
+a~set of HTTP requests to reduce network latency. If cloud providers introduced
+support for requesting multiple noncontiguous blocks of data in single HTTP call
+or for emerging SPDY web protocol, it would be beneficial to add support for it
+in DRI. Another idea it to perform data validation against multiple cloud providers
+simultaneously. Separate blocks of data should be reqested from different replicas.
+Other implementation improvements could also be investigated.
+
+\item Design and investigation how to combine DRI with LOB federated data access
+(LOBCDER) into one component. LOBCDER provides federated data access for the VPH-Share
+Cloud Platform -- all the requested data flows through this component. Many limitations
+to DRI design came out from separating these two components by design. In case of
+ensuring data integrity the combined component could perform data validation
+on the fly as the data is requested and retrieved from cloud storage. When data corruption
+occur, it could automatically recover by restoring the data from the remaining replicas.
+Moreover, it could perform data encryption while storing in the cloud. As a~result,
+validation algorithm would not be constrained with the requirement to store the data
+in original form, as well as it could be substituted with proofs or retrievability
+scheme.
+\end{enumerate}
+ 
+The other group addresses the problem of ensuring data integrity in cloud storage
+in general and abstracts away from VPH-Share project context. The concept monitoring
+data integrity in DRI service has a~potential for being applied as a~part of many
+software solutions. The ideas in this group are the following:
+
+\begin{enumerate}
+\item Extract the implementation of data validation mechanism and abstract it away
+from the context of VPH-Share project. It would be beneficial to take out DRI
+functionality and share it as open source solution. Needless to say that its architecture
+should be redesigned and implementation refactored. The design should clearly specify
+its dependencies and provide a~couple of implementations out of the box. Currently,
+DRI has two core dependencies -- metadata registry and notification service. Metadata
+registry stores all the metadata related to data validation and as such could be
+implemented as file, database (relational or no-sql) or stored itself on cloud storage
+in encrypted form. Notification service informs the user about discovered data integrity
+problems and could be implemented in form of email sender, XMPP protocol bot or sms
+gateway. Validation algorithm should also be pluggable as different use cases have 
+different requirements and limitations.
+
+\item Explore new ways of ensuring data integrity in cloud storage or design a~new
+validation algorithm that would satisfy the requirements outlined in this thesis. It is
+an on-going research in this field as no standards ways of monitoring data integrity in
+the cloud emerged.
+\end{enumerate}
+
+The above future work suggestions provide only a~brief description and probably does
+not exhaust the subject. However, they are provided as an~inspiration for the broad
+spectrum of improvement possibilities.
