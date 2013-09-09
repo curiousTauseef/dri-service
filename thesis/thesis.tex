@@ -12,6 +12,13 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{cite}
+\newcommand*{\glossaryname}{Glossary}
+\usepackage[nonumberlist]{glossaries}
+\usepackage{nomencl}
+
+\renewcommand{\nomname}{Abbreviations and Acronyms}
+\nomlabelwidth=25mm
+\makenomenclature
 \lstloadlanguages{TeX}
 
 % for \url command
@@ -66,23 +73,284 @@
 \facultyPL{Wydział Elektrotechniki, Automatyki, Informatyki i Elektroniki}
 \facultyEN{Faculty of Electrical Engineering, Automatics, Computer Science and Electronics}
 
-\acknowledgements{Tu będą podziękowania}
-
-
-
-\setlength{\cftsecnumwidth}{10mm}
-
 %---------------------------------------------------------------------------
 
-\begin{document}
 
+
+\newglossaryentry{vm}{
+	name={Virtual Machine},
+	description={virtualization technology that enables running operating
+system instances in isolated environments managed by a hypervisor. Hypervisor
+performs emulation on hardware resources, and enable multiple Virtual
+Machines to run simultaneously}
+}
+
+\newglossaryentry{cc}{
+	name={Cloud computing},
+	description={a computing paradigm based on virtual infrastructures
+delivered as hosted services over computer network}
+}
+
+\newglossaryentry{sla}{
+	name={Service Level Agreement},
+	description={a~contract between a~network service provider and a~customer
+	that specifies, usually in measurable terms, what services the network
+	service provider will furnish}
+}
+
+\newglossaryentry{rtt}{
+	name={Round-trip time},
+	description={also called round-trip delay, is the time required for a~signal
+	pulse or packet to travel from a~specific source to a~specific destination
+	and back again}
+}
+
+\newglossaryentry{cs}{
+	name={Cloud storage},
+	description={a~service model in which data is maintained, managed and backed
+	up remotely and made available to users over a~network (typically the Internet)}
+}
+
+\newglossaryentry{checksum}{
+	name={Checksum},
+	description={a~value used to verify the integrity of a~file or a~data transfer. In
+	other words, it is a~sum that checks the validity of data. It is typically used to
+	compare two sets of data to make sure they are the same}
+}
+
+\newglossaryentry{mac}{
+	name={Message authentication code (MAC)},
+	description={a~cryptographic checksum on data to detect both accidental and intentional
+	modifications of the data}
+}
+
+\newglossaryentry{dataset}{
+	name={Dataset},
+	description={a~term used in scope of VPH-Share project to simply name a~set of files}
+}
+
+\newglossaryentry{blob}{
+	name={Blob},
+	description={an unstructured data that is stored in a~cloud container. Different cloud
+	storage providers call them objects, blobs or files}
+}
+
+\newglossaryentry{ws}{
+	name={Web service},
+	description={a~software system designed to support interoperable machine-to-machine
+	interaction over a~network. It has an interface described in a~machine-processable
+	format (WSDL). Other systems interact with the web service in a~manner prescribed by
+	its description using messages (SOAP), typically conveyed using HTTP}
+}
+
+\newglossaryentry{ecc}{
+	name={Error correcting code (ECC)},
+	description={a~system of adding redundant data, or parity data, to a~message, such that
+	it can be recovered by a~receiver even when a~number of errors (up to the capability
+	of the code being used) were introduced, either during the process of transmission
+	or on storage.}
+}
+
+\newglossaryentry{dr}{
+	name={Data replication},
+	description={a~process of creating exact copies of a~set of data from the data site
+	containing the official data source and placing those data in at other data sites.
+	Replication helps to ensure consistency between redundant replicas to improve
+	reliability, fault-tolerance and accessibility}
+}
+
+\newglossaryentry{dri}{
+	name={Data reliability and integrity (DRI)},
+	description={a~codename of the tool for ensuring data availability and integrity in
+	federated cloud storage built in scope of this thesis}
+}
+
+\newglossaryentry{fcs}{
+	name={Federated cloud storage},
+	description={an integration of diverse cloud storage providers that can avoid limitations
+	associated with relying on single storage provider such as availability, scalability and
+	a~vendor lock-in effect}
+}
+
+\newglossaryentry{cf}{
+	name={Cloud federation},
+	description={the deployment and management of multiple external and internal cloud
+	computing services to match business needs}
+}
+
+\newglossaryentry{as}{
+	name={Atomic Service (AS)},
+	description={in scope of VPH-Share project it indicates a~VM instance on which core
+	application software components have been installed, wrapped as a~virtual system image and
+	registered for usage within the platform. Simply a~VM with some add-ons}
+}
+
+\newglossaryentry{vph-cp}{
+	name={VPH-Share Data and Compute Cloud Platform},
+	description={a~platform which goal is to develop and integrate a~consistent service-based
+	cloud infrastructure that will enable VPH community to deploy basic components of VPH-Share
+	application workflows on the available computing resources and enact workflows using these
+	services}
+}
+
+\newglossaryentry{servlet}{
+	name={Java Servlet},
+	description={a~Java programming language class that is used to extend the capabilities of
+	servers that host applications accessed by means of a~request-response programming model.
+	Although servlets can respond to any type of request, they are commonly used to extend the
+	applications hosted by web servers. For such applications, Java Servlet technology defines
+	HTTP-specific servlet classes.}
+}
+
+
+
+\makeglossaries
+
+\acknowledgements{}
+\setlength{\cftsecnumwidth}{10mm}
+
+\begin{document}
 \titlepages
 
+\nomenclature{API}{Application Programming Interface}
+\nomenclature{JVM}{Java Virtual Machine}
+\nomenclature{VPH}{Virtual Physiological Human}
+\nomenclature{MAC}{Message Authentication Code}
+\nomenclature{ECC}{Error Correcting Code}
+\nomenclature{SLA}{Service Level Agreement}
+\nomenclature{DRI}{Data Reliability and Integrity}
+\nomenclature{DIP}{Data Integrity Proof}
+\nomenclature{POR}{Proof of Retrievability}
+\nomenclature{RFC}{Request for Comments}
+\nomenclature{LSFR}{Linear Feedback Shift Register}
+\nomenclature{IETF}{Internet Engineering Task Force}
+\nomenclature{REST}{REpresentational State Transfer}
+\nomenclature{SOAP}{Simple Object Access Protocol}
+\nomenclature{HTTP}{HyperText Transfer Protocol}
+\nomenclature{SNIA}{Storage Networking Industry Association}
+\nomenclature{CMDI}{Cloud Data Management Interface}
+\nomenclature{SOA}{Service Oriented Architecture}
+\nomenclature{WebDAV}{Web Distributed Authoring and Versioning}
+\nomenclature{ACL}{Access Control List}
+\nomenclature{CRUD}{Create Read Update Delete}
+\nomenclature{HAIL}{High Availability and Integrity Layer}
+\nomenclature{PDP}{Provable Data Possession}
+\nomenclature{UI}{User Interface}
+\nomenclature{VM}{Virtual Machine}
+\nomenclature{AS}{Atomic Service}
+\nomenclature{LOBCDER}{Large OBject Cloud Data storagE fedeRation}
+\nomenclature{AIR}{Atmosphere Internal Registry}
+\nomenclature{JSON}{JavaScript Object Notation}
+\nomenclature{JAXB}{Java Architecture for XML Binding}
+\nomenclature{JAX-RS}{Java API for RESTful Web Services}
+\nomenclature{URL}{Uniform Resource Locator}
+\nomenclature{RTT}{Round Trip Time}
+\nomenclature{WAR}{Web Application Archive}
+\nomenclature{S3}{Simple Storage Service}
+\nomenclature{PaaS}{Platform as a Service}
+\nomenclature{IaaS}{Infrastructure as a Service}
+\nomenclature{SaaS}{Software as a Service}
+\nomenclature{JSR}{Java Specification Request}
+\nomenclature{HMAC}{Keyed-Hash Message Authentication Code}
+
+\chapter*{Abstract}
+\phantomsection
+\addcontentsline{toc}{chapter}{Abstract}
+In the modern world of the 21st century the global volume of digital
+data is enormous and is supposed to continue growing exponentially.
+It is an engineering challenge to fullfill current and future data
+storage requirements. Nowadays, we observe a rapid shift from privately
+owned and maintained computer systems toward cloud storage with virtually
+unlimited storage capacity, high availability and built-in data replication.
+As we more and more rely on digital data, it is absolutely necessary to provide means
+of ensuring its availability and integrity. Although there exists well-established
+methods for providing data reliability such as error correcting codes, hash-based
+checksums, backups and replication, the cloud storage model poses new challenges.
+In this model, the data is stored remotely on external storage resources outside of
+user control. Although cloud storage providers guarantee service level agreement contracts,
+recent cloud failure and unavailability reports suggest that cloud storage is not
+free from dangers. It appears necessary to monitor the availability and integrity of
+data stored on cloud storage provider. However, network latency, bandwidth and data
+transfer fees makes hash-based validation of full content of large amounts of data
+inefficient and practically infeasible.\\
+
+In the scope of this thesis we aim to address the problems and risks related to
+cloud data storage. As a~result, we designed and implemented a~tool that periodically
+monitors availability and integrity of data stored on cloud storage resources. The system
+was built on the basis of requirements originating from VPH-Share to enable scientists
+to tag datasets for transparent data monitoring and receive notifications in case of data
+integrity problems. We carefully examined the existing schemes of efficient data validation
+in the cloud. However, they clearly do not take into account current cloud storage limitations.
+The main contribution of this thesis is an efficient validation algorithm that with high
+probability can detect data availability and integrity errors while significantly reducing
+the amount of data transfer to $1$ -- $10\%$ of the original file size. The application was
+successfully deployed and evaluated in the production environment of the VPH-Share project.\\
+
+This work is organized in the following way. Chapter 1 provides an~introduction and states
+the general objectives of this thesis. General methods of ensuring data availability and
+integrity, cloud storage overview and current approaches to data integrity in the cloud are
+presented in Chapter 2. In Chapter 3 and 4 we present the design and implementation of data
+reliability and integrity (DRI) tool in the scope of VPH-Share project. Validation and testing
+of DRI is presented in Chapter 5. Chapter 6 summarizes the work and discusses future work. 
+
+
+\chapter*{Acknowledgements}
+\phantomsection
+\addcontentsline{toc}{chapter}{Acknowledgements}
+I would like to dedicate this thesis to my parents for their love and endless
+support in everything I do, as well as my beloved girlfriend Lidia, who was my continuous 
+motivation on the way to finish this work successfully. I would like to thank my supervisor
+Dr Marian Bubak for sharing his experience and guidance throughout the process of writing this
+thesis. I would also like to express my appreciation to Piotr Nowakowski for his advisory in
+designing and implementation of the tool developed in scope of this work.\\
+
+This thesis was realized partially in the framework of the following projects:
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.3\textwidth]{images/vph-logo.png}
+\end{figure}
+
+Virtual Physiological Human: Sharing for Healthcare (VPH-Share) - partially
+funded by the European Commission under the Information Communication
+Technologies Programme (contract number 269978).\\
+
+\begin{figure}[h!]
+	\centering
+	\begin{subfigure}[b]{0.4\textwidth}
+		\includegraphics[width=\textwidth, keepaspectratio=true]{images/kapital.png}
+	\end{subfigure}
+	\qquad
+	\begin{subfigure}[b]{0.1\textwidth}
+		\includegraphics[width=\textwidth, keepaspectratio=true]{images/agh.png}
+	\end{subfigure}
+	\qquad
+	\begin{subfigure}[b]{0.4\textwidth}
+		\includegraphics[width=\textwidth, keepaspectratio=true]{images/ue.png}
+	\end{subfigure}
+\end{figure}
+
+Project UDA-POKL.04.01-01-00-367/08-00 "Improvement of didactic potential
+of computer science specialization at AGH", at the Department of Computer
+Science, AGH University of Science and Technology, Al. A. Mickiewicza
+30, 30-059 Krakow\\
+
+ 
+
+\clearpage
 \tableofcontents
 \clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{List of figures}
 \listoffigures
 \clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{List of tables}
 \listoftables
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Abbreviations and Acronyms}
+\printnomenclature
 \clearpage
 
 \include{chapter1}
@@ -92,12 +360,20 @@
 \include{chapter5}
 \include{chapter6}
 
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Glossary}
+\glsaddall
+\printglossaries
 % itd.
 % \appendix
 % \include{dodatekA}
 % \include{dodatekB}
 % itd.
 
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
 \bibliography{biblio}{}
 \bibliographystyle{plain}
 
