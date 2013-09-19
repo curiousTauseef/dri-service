@@ -95,7 +95,7 @@ information in order to correct any errors that may occur in the process of
 storage or transmission. In practice, the redundant symbols are appended to the
 information symbols to obtain a coded sequence (codeword).\\
 
-ECC can be divided into two classes:\\
+ECC can be divided into two classes:
 
 \begin{itemize}
 	\item \textbf{block codes}: that work on fixed-size blocks of predetermined
@@ -239,9 +239,7 @@ similar cloud services on a higher level of abstraction
 storage access layer at the API level \cite{jclouds, libcloud}.\\
 
 Typically, cloud storage interfaces provide API to query, access and manage
-stored data, which can be divided into the following groups
-\cite{amazon-s3, rackspace-cloud, google-cloud, openstack-cloud, 
-eucalyptus-cloud}:\\
+stored data, which can be divided into the following groups:\\
 
 \begin{itemize}
 	\item \textbf{Operations for authentication}: to secure the access to
@@ -262,8 +260,7 @@ To provide high quality of service, cloud storage providers widely guarantee
 Service Level Agreement (SLA) contracts. These are mostly related to service
 availability during the billing cycle. The service downtime is considered as
 cloud network error or response errors to a valid user requests. Currently,
-most of the providers guarantee the availability level of $99.9\%$ of the time
-\cite{amazon-s3, rackspace-cloud, google-cloud}.\\
+most of the providers guarantee the availability level of $99.9\%$ of the time.\\
 
 However, if the provider will fail to provide a guaranteed level of service,
 the appriopriate percentage of the credit is returned to the client. In this
@@ -302,7 +299,8 @@ several unavailability and data corruption periods
 while Google Gmail lost data of thousands of accounts 
 \cite{gmail-downtime} and
 Google Docs enabled unauthorized access to the stored documents 
-\cite{docs-downtime}.\\
+\cite{docs-downtime}. The statistics and analysis of downtimes of current cloud
+solutions is presented in-depth in \cite{cloud-downtime-stats}.
 
 Cloud storage REST/SOAP interfaces are flexible and rich in capabilities, but
 when accessed remotely outside of cloud compute resources, they suffer from
@@ -467,10 +465,13 @@ costs of the protocols are low.\\
 The obvious advantage of the presented schemes is that they can be
 parameterized.\\
 
-Subsequent POR works \cite{compact-por, por2, hail, venus, iris} introduced
-further optimizations to the solution described. The most important are:
-moving MAC computation to the prover side and precomputing partial checksum
-values.\\
+Subsequent POR works \cite{hail, venus, iris} introduced
+further optimizations to the solution described. Bowers et al. \cite{hail} propose
+to distribute data in RAID-like way and ensure file availability against a~strong,
+mobile adversary. Stefanov et al. \cite{iris} go beyond basic data integrity verification
+and propose a~solution to achieve two stronger properties: file freshness and retrievability.
+Shraer et al. \cite{venus} presented Venus, a practical service that guarantees integrity 
+and consistency, while having insignificant overhead.\\
 
 However, POR-like schemes are not free from drawbacks. The primary limitation
 is that preprocessing phase introduces non-negligible computational overhead.
@@ -531,7 +532,7 @@ However, it still either assumes user's code execution capability by cloud
 provider or requires large number of accesses to non-continuous data fragments.
 Such data acceses are performed in separate HTTP requests in the current
 cloud storages (see section \ref{cloud-model}), which is practically
-infeasible.\\ 
+infeasible. 
 
 \section{Summary}
 In this chapter an important topics regarding data integrity and cloud storage were presented.

@@ -1,0 +1,36 @@
+@Path("/driservice")
+public class DRIService {
+	@PUT
+	@Produces(APPLICATION_JSON)
+	@Path("register_managed_dataset/{datasetId}")
+	public void registerManagedDataset(@PathParam("datasetId") String datasetId) {
+		// method body omitted
+	}
+	
+	@POST
+	@Produces(APPLICATION_JSON)
+	@Path("validate_managed_dataset/{datasetId}")
+	public void validateManagedDataset(@PathParam("datasetId") String datasetId) {
+		// method body omitted
+	}
+	
+	@GET
+	@Produces(APPLICATION_JSON)
+	@Path("get_managed_dataset")
+	public ManagedDataset getManagedDataset(QueryParam("datasetId")) {
+		// method body omitted
+	}
+	
+	// Further methods follow...
+}
+
+@XmlRootElement
+public class ManagedDataset {
+	@XmlElement(name = "name", required = true)
+	private String name;
+	
+	@XmlElement(name = "size", required = true)
+	private Long size;
+	
+	// Further members follow...
+}

@@ -250,56 +250,6 @@ In addition to UI based tagging, the DRI component provides API-level access
 for the same purpose, whenever a VPH-Share application (or workflow) needs to
 tag specific data as a managed dataset.
 
-\section{Requirements}
-\label{requirements}
-VPH Cloud Platform puts strong empasis on data storage and availability and
-integrity assurance, as it is mostly static medical data of great importance.
-To fulfill this goal, it takes advantage of outsourcing data storage. To
-achieve high data availability in cases of cloud failure (see section
-\ref{cloud-model}) and avoid vendor lock-in issues, it utilizes mixture of
-public and private clouds. However, it is still desired to monitor periodically
-the availability and integrity of data deployed at cloud storage services. DRI
-service was designed under several crucial requirements that dictate its
-architecture and potential. This section describes these requirements.\\
-	
-Cloud Platform requirements can be divided into two groups: functional and
-non-functional.
-
-\subsection{Functional}
-Functional requirements are related to the core system capabilities that it
-is desired to ensure. These are the following:
-
-\begin{itemize}
-	\item \textbf{Periodic and on-request validation}: DRI has to periodically
-	fetch datasets' metadata from the AIR registry and check the availability
-	and integrity of managed datasets. It also has to enable API interface for
-	this operation to be invoked by the user on demand.
-	\item \textbf{Data replication}: DRI has to enable API interface for data
-	replication from one data source to the other. 
-	\item \textbf{User notification about integrity errors}: validation and
-	replication operations has to be performed asynchronously and the results
-	have to presented to the user via suitable notification service.
-\end{itemize}
-
-\subsection{Nonfunctional}
-Nonfunctional requirements are related to the quality of the core system
-capabilities, as it is desired that validation and replication mechanisms are
-performed efficiently. These are the following:
-\begin{itemize}
-	\item \textbf{Bandwidth-efficient validation mechanism}: naive download and
-	check technique is infeasible. The main DRI challenge is to design and
-	implement efficient data validation protocol without accessing the entire
-	file.
-	\item \textbf{Scalablility}: as it is foreseen that the amount of data
-	stored in Cloud Platform resources will be significant, the DRI has to
-	present the ability to scale with the size of data. It is suggested to be
-	achieved by deploying many independent DRI replicas. 
-	\item \textbf{Configurability}: DRI has to provide API interface or UI
-	portlet to configure its most important parameter: validation period. It is
-	also desired for the designed validation protocol, to be configurable, to
-	be able to adjust error-detection probability.
-\end{itemize}
-
 \section{Architecture}
 The DRI Runtime is responsible for enforcing data management policies. It keeps
 track of managed components and periodically verifies the accessibility and
@@ -441,7 +391,7 @@ present a typical execution flow for this tasks through DRI subcomponents
 presented in figure \ref{fig:dri-architecture} using sequence diagrams.\\
 
 We start with data validation illustrated in figure
-\ref{fig:validation-diagram}. The $validateManagedDataset()$ method is the one
+\ref{fig:validation-diagram}. The \textit{validateManagedDataset()} method is the one
 designed to be called by the user, however, the incorporated logic for periodic
 integrity checks is the same, as ValidationExecutor fetches all the managed
 datasets from AIR and invokes this operation for each of them.\\
@@ -449,50 +399,50 @@ datasets from AIR and invokes this operation for each of them.\\
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth]{images/validation-diagram.png}
-	\caption{DRI $validateManagedDataset()$ call sequence diagram}
+	\caption{DRI \textit{validateManagedDataset()} call sequence diagram}
 	\label{fig:validation-diagram}
 \end{figure}
 
-Upon $validateManagedDataset()$ call, the DRI service retrieves dataset's
-metadata from AIR registry invoking $getDataset(id)$ on MetadataAccess object
+Upon \textit{validateManagedDataset()} call, the DRI service retrieves dataset's
+metadata from AIR registry invoking \textit{getDataset(id)} on MetadataAccess object
 and passes it to the ValidationExecutor to apply data availability and
 integrity check. Subsequently, ValidationExecutor retrieves the metadata of
 all the logical data items which are part of the specified dataset invoking
-$getLogicalData(dataset)$ on MetadataAccess. Validation occurs separately for
+\textit{getLogicalData(dataset)} on MetadataAccess. Validation occurs separately for
 each logical data and against every data source on which it is stored by
 ValidationStrategy object which implements efficient validation protocol. To
 perform this operation, it has to get some necessary portion of data from data
-source by calling $getValidationData(logicalData, dataSource)$ on
+source by calling \textit{getValidationData(logicalData, dataSource)} on
 FederatedDataAccess object. With this necessary data, ValidationStrategy can
 verify whether the specified logical data is available and valid. If not, the
 error message is dispatched via NotificationService. It incorporates all or
 nothing strategy, which means that the corruption of a single logical data
 results in marking whole dataset as invalid. However, detailed error message
 informs which items' corruption has been detected on which data sources. The
-$validateManagedDataset()$ call performs asynchronously (no return value), but
+\textit{validateManagedDataset()} call performs asynchronously (no return value), but
 the result of the operation can be checked via NotificationService.\\
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth]{images/replication-diagram.png}
-	\caption{DRI $assignDatasetToResource()$ call sequence diagram}
+	\caption{DRI \textit{assignDatasetToResource()} call sequence diagram}
 	\label{fig:replication-diagram}
 \end{figure}
 
 Upon \textit{assignDatasetToResource()} 
 call (figure \ref{fig:replication-diagram}), the DRIService retrieves
 dataset's and data source's metadata from AIR registry invoking
-$getDataset(id)$ and $getDataSource(source)$ on MetadataAccess object and
+\textit{getDataset(id)} and \textit{getDataSource(source)} on MetadataAccess object and
 passes it to the ReplicationExecutor. If dataset is already present on the
 specified location, this operation has no effect. Subsequently,
 ReplicationExecutor checks all the constraints, via 
-$check(dataset, dataSource)$ call, that may be associated with the
+\textit{check(dataset, dataSource)} call, that may be associated with the
 dataset (such as it cannot be stored in public clouds) and if they are valid,
 it performs the replication. This operation simply copies data from one data
 source on which the dataset is already present to the specified data source.
 In case of any failures, the operation aborts with no side effects. Upon
 successful execution, the necessary dataset metadata is updated in AIR registry
-($updateDataset(dataset)$ call).\\
+(\textit{updateDataset(dataset)} call).\\
 
 	\section{Data validation mechanism}
 	\label{section:validation-algorithm}
@@ -521,7 +471,7 @@ interfaces and VPH-Share platform requirements:
 These limitations make these solutions impractical. For the needs of DRI
 service, a~new approach was designed with practical feasibility and low network
 overhead as main objectives in mind. Our heuristic utilizes spot-checking
-technique \cite{por, pdp, dip, ric} to verify data integrity with high
+technique to verify data integrity with high
 probability. Unlike cited mechanisms \cite{dip, por} which generally implement
 fine-grained spot-checking, we are aware of cloud storage limitations and
 employ coarse-grained spot-checking, realizing that it will result in reduced
@@ -533,8 +483,10 @@ stored on cloud storage resource. To be able to validate dataset's integrity,
 it is firstly necessary to retrieve dataset's data, then compute and store some
 checksum metadata for each file. During the validation process, the dataset's
 data is retrieved and checksums are computed again to compare them with the
-original ones. The following pseudocode illustrates this operation:
+original ones. The algorithm 1 illustrates the pseudocode
+of this operation.\\
 
+\begin{figure}
 \begin{algorithm}[H]
 	\SetLine
 	\linesnumbered
@@ -556,6 +508,8 @@ original ones. The following pseudocode illustrates this operation:
 	}
 \caption{Dataset validation algorithm}
 \end{algorithm}
+\label{fig:algorithm-pseudocode}
+\end{figure}
 
 To validate a dataset, the metadata of it and all the files it consists of
 have to be retrieved (lines 1--2). Then, each file is validated against every
@@ -699,7 +653,7 @@ performance evaluation with varying values of the parameters $n$, $k$ and
 $threshold$) and in the real cloud storage environment is presented in chapter
 \ref{cha:testing}.
 
-\subsection{Summary}
+\section{Summary}
 This chapter presented in-depth the design and architecture of data reliability and
 integrity (DRI) service. The architecture of the VPH-Share Cloud Platform was introduced
 to provide a~context in which DRI is developed and that mostly influenced its requirements.
