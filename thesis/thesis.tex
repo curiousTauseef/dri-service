@@ -17,6 +17,7 @@
 \usepackage{nomencl}
 \usepackage[T1]{fontenc}
 \usepackage{charter}
+\usepackage{pdfpages}
 
 \renewcommand{\nomname}{Abbreviations and Acronyms}
 \nomlabelwidth=25mm
@@ -64,8 +65,8 @@
 \supervisorPL{dr inż. Marian Bubak}
 \supervisorEN{Marian Bubak Ph.D}
 
-\consultancyPL{Piotr Nowakowski}
-\consultancyEN{Piotr Nowakowski}
+\consultancyPL{mgr inż. Piotr Nowakowski\\ACC Cyfronet AGH, Kraków}
+\consultancyEN{Piotr Nowakowski\\ACC Cyfronet AGH, Kraków}
 
 \date{2013}
 
@@ -317,28 +318,7 @@ This thesis was realized partially in the framework of the following projects:
 
 Virtual Physiological Human: Sharing for Healthcare (VPH-Share) - partially
 funded by the European Commission under the Information Communication
-Technologies Programme (contract number 269978).\\
-
-\begin{figure}[h!]
-	\centering
-	\begin{subfigure}[b]{0.4\textwidth}
-		\includegraphics[width=\textwidth, keepaspectratio=true]{images/kapital.png}
-	\end{subfigure}
-	\qquad
-	\begin{subfigure}[b]{0.1\textwidth}
-		\includegraphics[width=\textwidth, keepaspectratio=true]{images/agh.png}
-	\end{subfigure}
-	\qquad
-	\begin{subfigure}[b]{0.4\textwidth}
-		\includegraphics[width=\textwidth, keepaspectratio=true]{images/ue.png}
-	\end{subfigure}
-\end{figure}
-
-Project UDA-POKL.04.01-01-00-367/08-00 "Improvement of didactic potential
-of computer science specialization at AGH", at the Department of Computer
-Science, AGH University of Science and Technology, Al. A. Mickiewicza
-30, 30-059 Krakow\\
-
+Technologies Programme (contract number 269978).
  
 
 \clearpage
@@ -364,16 +344,16 @@ Science, AGH University of Science and Technology, Al. A. Mickiewicza
 \include{chapter5}
 \include{chapter6}
 
+\appendix
+\chapter{Cracow Grid Workshop 2013 short article}
+\includepdf[pages=-]{images/cgw13article.pdf}
+
+
 \clearpage
 \phantomsection
 \addcontentsline{toc}{chapter}{Glossary}
 \glsaddall
 \printglossaries
-% itd.
-% \appendix
-% \include{dodatekA}
-% \include{dodatekB}
-% itd.
 
 \clearpage
 \phantomsection

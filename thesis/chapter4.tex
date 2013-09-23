@@ -32,7 +32,7 @@ acceptable probability of unavailability or error detection. The design of DRI
 Service already solved some performance issues, mostly on the validation
 algorithm. However, implementation details have to be taken into account.
 	
-\section{Implementation challenges and decisions}
+\section{Challenges and decisions}
 
 It is a recurring engineering truth, that practical implementation to some degree
 always affects the design. Ideally, project's implementation should accurately reflect
@@ -171,7 +171,7 @@ container and put a blob into it:
 
 \lstinputlisting[language=Java, basicstyle=\footnotesize, frame=single]{src/jclouds-example.java}
 
-\subsection{Request and periodic task scheduling}
+\subsection{Task scheduling}
 DRI Service periodically monitors data integrity. Periodic tasks invocation
 is a~recurring issue in many IT systems. DRI uses Quartz library \cite{quartz}
 for task scheduling and execution. Quartz is a~full-featured open source job scheduling
@@ -199,7 +199,7 @@ that apart from validation jobs, there are jobs that update dataset checksums wh
 contents changed and both of them cannot collide with each other. Upon job execution, a
 \textit{JobDetail} is returned.
 
-\section{Validation implementation details}
+\section{Data validation implementation details}
 DRI Service utilizes efficient data validation algorithm to achieve acceptable
 performance over large amount of data. However, apart from algorithm
 efficiency, its optimized implementation is greatly desirable. Due to the fact

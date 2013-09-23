@@ -78,7 +78,7 @@ im. Stanis\l{}awa Staszica w Krakowie}}}
 
 {\huge\scshape \@thesistypePL}\\\vspace*{2cm}
 
-{\LARGE\scshape \@author}\\\vspace*{2cm}
+{\LARGE\scshape \@author}{\large\\Informatyka}\\\vspace*{2cm}
 
 {\LARGE{\bfseries\scshape \@titlePL}}\\\vspace*{3cm}
 
@@ -127,7 +127,7 @@ University of Science and Technology in Krakow}}}
 
 {\huge\scshape \@thesistypeEN}\\\vspace*{2cm}
 
-{\LARGE\scshape \@author}\\\vspace*{2cm}
+{\LARGE\scshape \@author}{\large\\Computer Science}\\\vspace*{2cm}
 
 {\LARGE{\bfseries\scshape \@titleEN}}\\\vspace*{3cm}
 
