@@ -25,88 +25,44 @@ public class LogicalData {
         return checksum;
     }
 
-    public void setChecksum(String checksum) {
-        this.checksum = checksum;
-    }
-
     public long getLastValidationDate() {
         return lastValidationDate;
-    }
-
-    public void setLastValidationDate(long lastValidationDate) {
-        this.lastValidationDate = lastValidationDate;
     }
 
     public long getLength() {
         return length;
     }
 
-    public void setLength(long length) {
-        this.length = length;
-    }
-
     public long getModifiedDate() {
         return modifiedDate;
-    }
-
-    public void setModifiedDate(long modifiedDate) {
-        this.modifiedDate = modifiedDate;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getOwner() {
         return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
     }
 
     public long getParentRef() {
         return parentRef;
     }
 
-    public void setParentRef(long parentRef) {
-        this.parentRef = parentRef;
-    }
-
     public long getPdriGroupId() {
         return pdriGroupId;
-    }
-
-    public void setPdriGroupId(long pdriGroupId) {
-        this.pdriGroupId = pdriGroupId;
     }
 
     public boolean isSupervised() {
         return supervised;
     }
 
-    public void setSupervised(boolean supervised) {
-        this.supervised = supervised;
-    }
-
     public DataType getType() {
         return type;
     }
 
-    public void setType(DataType type) {
-        this.type = type;
-    }
-
     public long getUid() {
         return uid;
-    }
-
-    public void setUid(long uid) {
-        this.uid = uid;
     }
 
     public boolean isFile() {

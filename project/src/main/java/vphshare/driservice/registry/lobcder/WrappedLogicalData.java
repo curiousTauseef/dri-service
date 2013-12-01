@@ -24,16 +24,8 @@ public class WrappedLogicalData {
 		return logicalData;
 	}
 
-    public void setLogicalData(LogicalData logicalData) {
-        this.logicalData = logicalData;
-    }
-
 	public String getPath() {
 		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
 	}
 
 	public List<DataSource> getDataSources() {

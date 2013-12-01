@@ -14,12 +14,6 @@ public class WrappedLogicalDataList {
 	@XmlElement(name = "logicalDataWrapped")
     private List<WrappedLogicalData> items = new ArrayList<WrappedLogicalData>();
 
-    public WrappedLogicalDataList() {}
-
-    public WrappedLogicalDataList(List<WrappedLogicalData> items) {
-        this.items = items;
-    }
-    
     public List<WrappedLogicalData> getItems() {
         return items;
     }
