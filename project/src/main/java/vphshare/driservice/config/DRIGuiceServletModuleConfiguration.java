@@ -54,7 +54,8 @@ public class DRIGuiceServletModuleConfiguration extends JerseyServletModule {
 			protected void configure() {
 				bind(DRIServiceImpl.class);
 				bind(ValidationStrategy.class).to(DefaultValidationStrategy.class);
-                bind(MetadataRegistry.class).to(LobcderMetadataRegistry.class);
+
+                // DRI executor service
                 bind(ThreadPoolExecutor.class)
                         .toInstance(new ThreadPoolExecutor(
                                 5, 5,
@@ -78,10 +79,11 @@ public class DRIGuiceServletModuleConfiguration extends JerseyServletModule {
 				// Properties bindings
 				bindProperties(binder(), PropertiesProvider.getProperties());
 				
-				// Providers bindings
+				// Lobcder metadata registry
 				bind(WebResource.class)
 					.annotatedWith(named("lobcder-config"))
 					.toProvider(LobcderConfigurationProvider.class);
+                bind(MetadataRegistry.class).to(LobcderMetadataRegistry.class);
 
                 // Periodic scheduling
                 bind(PeriodicScheduler.class).asEagerSingleton();
