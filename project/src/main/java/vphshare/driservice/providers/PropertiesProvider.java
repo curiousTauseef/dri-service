@@ -1,16 +1,13 @@
 package vphshare.driservice.providers;
 
-import static java.util.logging.Level.SEVERE;
-
 import java.io.IOException;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 
 
 public class PropertiesProvider {
-	
-	private static final Logger LOG = Logger.getLogger(PropertiesProvider.class.getName());
+
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(PropertiesProvider.class);
 
 	private static final Properties properties = new Properties();
 	
@@ -20,7 +17,8 @@ public class PropertiesProvider {
 		try {
 			properties.load(PropertiesProvider.class.getClassLoader().getResourceAsStream("config.properties"));
 		} catch (IOException e) {
-			LOG.log(SEVERE, "Unable to read properties configuration file", e);
+			logger.fatal("Unable to read properties configuration file", e);
+            throw new RuntimeException(e);
 		}
 	}
 	
