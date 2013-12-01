@@ -17,6 +17,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import vphshare.driservice.aop.DRIServiceExceptionHandler;
 import vphshare.driservice.aop.MetadataRegistryExceptionHandler;
 import vphshare.driservice.notification.CombinedNotificationService;
@@ -59,7 +60,10 @@ public class DRIGuiceServletModuleConfiguration extends JerseyServletModule {
                                 5, 5,
                                 0, TimeUnit.SECONDS,
                                 new ArrayBlockingQueue<Runnable>(20),
-                                Executors.defaultThreadFactory(),
+                                new ThreadFactoryBuilder()
+                                    .setThreadFactory(Executors.defaultThreadFactory())
+                                    .setNameFormat("DRI-Executor-%d")
+                                    .build(),
                                 new ThreadPoolExecutor.AbortPolicy()));
 
                 // Notifications
