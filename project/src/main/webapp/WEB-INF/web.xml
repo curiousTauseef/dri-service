@@ -19,55 +19,8 @@
 		<listener-class>vphshare.driservice.config.GuiceServletConfig</listener-class>
 	</listener>
 	
-	<!-- 
-	<listener>
-		<listener-class>vphshare.driservice.scheduler.SchedulerOnLoadStartup</listener-class>
-    </listener>
-    
-	<servlet>
-		<servlet-name>driservice</servlet-name>
-		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
-		<init-param>
-			<param-name>com.sun.jersey.config.property.resourceConfigClass</param-name>
-			<param-value>com.sun.jersey.api.core.PackagesResourceConfig</param-value>
-		</init-param>
-		<init-param>
-			<param-name>com.sun.jersey.config.property.packages</param-name>
-			<param-value>vphshare.driservice.service</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-     
-	<servlet-mapping>
-		<servlet-name>driservice</servlet-name>
-		<url-pattern>/dri/*</url-pattern>
-	</servlet-mapping>
-	-->
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
-	
-<!-- 	<security-constraint> -->
-<!-- 		<web-resource-collection> -->
-<!-- 			<web-resource-name>Whole Application</web-resource-name> -->
-<!-- 			<url-pattern>/dri/*</url-pattern> -->
-<!-- 			<http-method>GET</http-method> -->
-<!-- 			<http-method>POST</http-method> -->
-<!-- 		</web-resource-collection> -->
-<!-- 		<auth-constraint> -->
-<!-- 			<role-name>driservice</role-name> -->
-<!-- 		</auth-constraint> -->
-<!-- 		<user-data-constraint> -->
-<!-- 			<transport-guarantee>NONE</transport-guarantee> -->
-<!-- 		</user-data-constraint> -->
-<!-- 	</security-constraint> -->
-	
-<!-- 	<login-config> -->
-<!-- 		<auth-method>DIGEST</auth-method> -->
-<!-- 		<realm-name>driservice</realm-name> -->
-<!-- 	</login-config> -->
-	
-<!-- 	<security-role> -->
-<!-- 		<role-name>driservice</role-name> -->
-<!-- 	</security-role> -->
+
 </web-app>
