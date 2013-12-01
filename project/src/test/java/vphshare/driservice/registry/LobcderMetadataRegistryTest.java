@@ -37,7 +37,7 @@ public class LobcderMetadataRegistryTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void shouldReturnNoDatasets() {
-		when(serviceMock.path(anyString()).get(any(GenericType.class)))
+		when(serviceMock.queryParam(anyString(), anyString()).path(anyString()).get(any(GenericType.class)))
 		.thenReturn(new ArrayList<WrappedLogicalData>());
 		List<CloudDirectory> datasets = registry.getCloudDirectories(false);
 		assertEquals(0, datasets.size());

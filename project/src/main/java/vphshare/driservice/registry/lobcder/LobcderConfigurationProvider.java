@@ -1,4 +1,4 @@
-package vphshare.driservice.providers;
+package vphshare.driservice.registry.lobcder;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -12,16 +12,18 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
-public class AIRConfigurationProvider implements Provider<WebResource> {
+public class LobcderConfigurationProvider implements Provider<WebResource> {
 	
-	@Inject @Named("air.baseurl") 
+	@Inject @Named("lobcder.baseurl") 
 	private String baseURL;
-	@Inject @Named("air.username")
+	@Inject @Named("lobcder.username")
 	private String username;
-	@Inject @Named("air.password")
+	@Inject @Named("lobcder.password")
 	private String password;
+	@Inject @Named("lobcder.read_timeout")
+	private int readTimeout;
 	
-	public AIRConfigurationProvider() {}
+	public LobcderConfigurationProvider() {}
 
 	@Override
 	public WebResource get() {
@@ -30,6 +32,7 @@ public class AIRConfigurationProvider implements Provider<WebResource> {
 		config.getClasses().add(JsonPlainTextEnablingProvider.class);
 
 		Client client = Client.create(config);
+		client.setReadTimeout(readTimeout);
 		client.addFilter(httpBasicAuthFilter);
 
 		return client.resource(baseURL);

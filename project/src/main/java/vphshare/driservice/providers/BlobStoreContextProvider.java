@@ -51,12 +51,11 @@ public class BlobStoreContextProvider {
 		overrides.setProperty(PROPERTY_ENDPOINT, endpoint);
 		overrides.setProperty(PROPERTY_TRUST_ALL_CERTS, "true");
 		overrides.setProperty(PROPERTY_RELAX_HOSTNAME, "true");
-		BlobStoreContext context = contextFactory.createContext("swift",
+		return contextFactory.createContext("swift",
 				ds.getUsername(),
 				ds.getPassword(),
 				// null logging module to get rid of nasty warnings using Swift...
 				ImmutableSet.<Module> of(new EnterpriseConfigurationModule(), new NullLoggingModule()),
 				overrides);
-		return context;
 	}
 }

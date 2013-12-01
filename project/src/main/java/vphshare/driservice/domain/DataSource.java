@@ -14,36 +14,37 @@ public class DataSource {
 	private String username;
 	private String password;
 
-	public String getContainer() {
-		return container;
-	}
-	
-	public void setContainer(String container) {
-		this.container = container;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getResourceUrl() {
-		return resourceUrl;
-	}
-	public void setResourceUrl(String resourceUrl) {
-		this.resourceUrl = resourceUrl;
-	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    private DataSource() {}
+
+    public DataSource(String container, String name, String resourceUrl, String username, String password) {
+        this.container = container;
+        this.name = name;
+        this.resourceUrl = resourceUrl;
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getContainer() {
+        return container;
+    }
+
+    public void setContainer(String container) {
+        this.container = container;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getResourceUrl() {
+        return resourceUrl;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }

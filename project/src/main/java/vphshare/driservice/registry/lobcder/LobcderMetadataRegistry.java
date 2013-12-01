@@ -1,27 +1,26 @@
 package vphshare.driservice.registry.lobcder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
+import com.sun.jersey.api.client.GenericType;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.uri.UriTemplate;
 import org.apache.log4j.Logger;
-
 import vphshare.driservice.domain.CloudDirectory;
 import vphshare.driservice.domain.CloudFile;
 import vphshare.driservice.domain.DataSource;
 import vphshare.driservice.exceptions.ResourceNotFoundException;
 import vphshare.driservice.registry.MetadataRegistry;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import com.sun.jersey.api.client.GenericType;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.uri.UriTemplate;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Date;
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Predicates.and;
+import static com.google.common.base.Predicates.not;
 
 public class LobcderMetadataRegistry implements MetadataRegistry {
 	
@@ -42,54 +41,32 @@ public class LobcderMetadataRegistry implements MetadataRegistry {
 		logger.debug("Getting all cloud directories from LOBCDER [onlyManaged=" + Boolean.toString(onlyManaged) + "]");
 		String getCloudDirsPath = new UriTemplate("/items/query").createURI();
 		logger.debug("Using URI: " + service.getURI() + getCloudDirsPath);
-		
+
 		List<WrappedLogicalData> wrappeds = service
 				.queryParam("isSupervised", Boolean.toString(onlyManaged))
 				.path(getCloudDirsPath)
 				.get(new GenericType<List<WrappedLogicalData>>() {});
-		
-		List<WrappedLogicalData> filtered = new ArrayList<WrappedLogicalData>();
-		for (WrappedLogicalData wrapped : wrappeds) {
-			if ("logical.folder".equals(wrapped.getLogicalData().getType()))
-				filtered.add(wrapped);
-		}
-		
-		List<CloudDirectory> datasets = new ArrayList<CloudDirectory>();
-		for (WrappedLogicalData wrapped : filtered) {
-			CloudDirectory dir = new CloudDirectory();
-			dir.setId(Long.toString(wrapped.getLogicalData().getUid()));
-			dir.setName(wrapped.getPath());
-			datasets.add(dir);
-		}
-		
-		logger.info("Query returned " + datasets.size() + " cloud directory entries");
-		return datasets;
+
+        return FluentIterable
+                .from(wrappeds)
+                .filter(IsDirectoryPredicate.INSTANCE)
+                .transform(LobcderCloudDirectoryConverter.INSTANCE)
+                .toList();
 	}
 
 	@Override
-	public CloudDirectory getCloudDirectory(String directoryId, boolean onlyManaged) {
+	public CloudDirectory getCloudDirectory(String directoryId) {
 		logger.debug("Getting directory [id=" + directoryId + "] from LOBCDER");
 		String getCloudDirPath = new UriTemplate(QUERY_ITEMS_URI).createURI(directoryId);
 		logger.debug("Using URI: " + service.getURI() + getCloudDirPath);
 		WrappedLogicalData wld = service
-			.path(getCloudDirPath)
-			.get(WrappedLogicalData.class);
-		
-		if (! "logical.folder".equals(wld.getLogicalData().getType()))
+			    .path(getCloudDirPath)
+			    .get(WrappedLogicalData.class);
+
+		if (!wld.getLogicalData().isDirectory())
 			throw new ResourceNotFoundException("Directory " + directoryId + " does not exist");
 		
-		CloudDirectory dir = new CloudDirectory();
-		dir.setId(Long.toString(wld.getLogicalData().getUid()));
-		dir.setName(wld.getPath());
-		
-		if (onlyManaged) {
-			if (wld.getLogicalData().isSupervised())
-				return dir;
-			else
-				throw new ResourceNotFoundException("Directory " + directoryId + " does not exist or not set as supervised");
-		} else {
-			return dir;
-		}
+		return LobcderCloudDirectoryConverter.INSTANCE.apply(wld);
 	}
 
 	@Override
@@ -121,38 +98,22 @@ public class LobcderMetadataRegistry implements MetadataRegistry {
 				.queryParam("path", directory.getName())
 				.path(getCloudFilesPath)
 				.get(new GenericType<List<WrappedLogicalData>>() {});
-		
-		List<WrappedLogicalData> filtered = new ArrayList<WrappedLogicalData>();
-		for (WrappedLogicalData wrapped : wrappeds) {
-			if ("logical.file".equals(wrapped.getLogicalData().getType())
-					&& wrapped.getPath().equals(directory.getName() + "/" + wrapped.getLogicalData().getName()))
-				filtered.add(wrapped);
-		}
-		
-		logger.debug("Query returned " + filtered.size() + " cloud files");
-		return Lists.transform(filtered, new Function<WrappedLogicalData, CloudFile>() {
+        logger.debug(String.format("Lobcder service returned [%d] files for %s",
+                wrappeds.size(),
+                directory));
 
-			@Override
-			public CloudFile apply(@Nullable WrappedLogicalData input) {
-				CloudFile ld = new CloudFile();
-				ld.setId(Long.toString(input.getLogicalData().getUid()));
-				ld.setName(input.getLogicalData().getName());
-				ld.setPath(input.getPath());
-				ld.setSize(input.getLogicalData().getLength());
-				ld.setChecksum(input.getLogicalData().getChecksum());
-				ld.setLastValidationDate(Long.toString(input.getLogicalData().getLastValidationDate()));
-				ld.setDataSources(Arrays.asList(input.getDataSource()));
-				
-				// TODO container is hardcoded in LOBCDER, we have to hardcode too, refactor it
-				for (DataSource ds : ld.getDataSources()) {
-					ds.setContainer("LOBCDER-REPLICA-vTEST");
-				}
-				
-				return ld;
-			}
-		});
-	}
-
+        List<CloudFile> files =  FluentIterable
+                .from(wrappeds)
+                .filter(
+                        and(
+                            not(IsDirectoryPredicate.INSTANCE),
+                            new IsDirectChild(directory)))
+                .transform(LobcderCloudFileConverter.INSTANCE)
+                .toList();
+        logger.debug(String.format("[%d] files after filtering %s", files.size(), directory));
+        return files;
+		
+    }
 	@Override
 	public CloudFile getCloudFile(CloudDirectory directory, String fileId) {
 		logger.debug("Getting cloud file [id=" + fileId + "] for directory [id=" + directory.getId() + "]");
@@ -162,23 +123,10 @@ public class LobcderMetadataRegistry implements MetadataRegistry {
 			.path(getCloudFilePath)
 			.get(new GenericType<WrappedLogicalData>() {});
 		
-		if (!"logical.file".equals(wld.getLogicalData().getType()))
+		if (!wld.getLogicalData().isFile())
 			throw new ResourceNotFoundException("Cloud file " + fileId + " does not exist");
-		
-		CloudFile ld = new CloudFile();
-		ld.setId(Long.toString(wld.getLogicalData().getUid()));
-		ld.setName(wld.getLogicalData().getName());
-		ld.setPath(wld.getPath());
-		ld.setSize(wld.getLogicalData().getLength());
-		ld.setChecksum(wld.getLogicalData().getChecksum());
-		ld.setLastValidationDate(Long.toString(wld.getLogicalData().getLastValidationDate()));
-		ld.setDataSources(Arrays.asList(wld.getDataSource()));
-		
-		for (DataSource ds : ld.getDataSources()) {
-			ds.setContainer("LOBCDER-REPLICA-vTEST");
-		}
-		
-		return ld;
+
+		return LobcderCloudFileConverter.INSTANCE.apply(wld);
 	}
 
 	@Override
@@ -204,5 +152,85 @@ public class LobcderMetadataRegistry implements MetadataRegistry {
 			.path(updateValidationDatePath)
 			.put();
 	}
+
+    public static class IsDirectoryPredicate implements Predicate<WrappedLogicalData> {
+
+        public static final IsDirectoryPredicate INSTANCE = new IsDirectoryPredicate();
+
+        private IsDirectoryPredicate() {}
+
+        @Override
+        public boolean apply(WrappedLogicalData wld) {
+            return wld.getLogicalData().isDirectory();
+        }
+    }
+
+    public static class IsDirectChild implements Predicate<WrappedLogicalData> {
+        private final CloudDirectory dir;
+
+        public IsDirectChild(CloudDirectory dir) {
+            this.dir = dir;
+        }
+
+        @Override
+        public boolean apply(WrappedLogicalData wld) {
+            if (dir.getName().equals("/")) {
+                return wld.getPath().equals("/".concat(wld.getLogicalData().getName()));
+            } else {
+                return wld.getPath().equals(dir.getName().concat("/").concat(wld.getLogicalData().getName()));
+            }
+        }
+    }
+
+    public static class LobcderCloudDirectoryConverter implements Function<WrappedLogicalData, CloudDirectory> {
+
+        public static final LobcderCloudDirectoryConverter INSTANCE = new LobcderCloudDirectoryConverter();
+
+        private LobcderCloudDirectoryConverter() {}
+
+        @Override
+        public CloudDirectory apply(WrappedLogicalData wld) {
+            LogicalData ld = wld.getLogicalData();
+            checkArgument(ld.isDirectory(), "Logical data has to be a directory");
+
+            return new CloudDirectory(
+                    Long.toString(ld.getUid()),
+                    wld.getPath(),
+                    ld.getOwner(),
+                    ld.isSupervised()
+            );
+        }
+    }
+
+    public static class LobcderCloudFileConverter implements Function<WrappedLogicalData, CloudFile> {
+
+        public static final LobcderCloudFileConverter INSTANCE = new LobcderCloudFileConverter();
+
+        private LobcderCloudFileConverter() {}
+
+        @Override
+        public CloudFile apply(WrappedLogicalData wld) {
+            LogicalData ld = wld.getLogicalData();
+            checkArgument(ld.isFile(), "Logical data has to be a file");
+
+            CloudFile file = new CloudFile(
+                    Long.toString(ld.getUid()),
+                    ld.getName(),
+                    wld.getPath(),
+                    ld.getLength()
+            );
+
+            file.setChecksum(ld.getChecksum());
+            file.setLastValidationDate(Long.toString(ld.getLastValidationDate()));
+            file.setDataSources(wld.getDataSources());
+
+            // TODO container is hardcoded in LOBCDER, we have to hardcode too, refactor it
+            for (DataSource ds : file.getDataSources()) {
+                ds.setContainer("LOBCDER-REPLICA-vTEST");
+            }
+
+            return file;
+        }
+    }
 
 }

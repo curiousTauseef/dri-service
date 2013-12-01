@@ -1,8 +1,9 @@
 package vphshare.driservice.domain;
 
-import java.util.List;
+import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 
-import org.apache.commons.collections.Predicate;
+import java.util.List;
 
 
 public class CloudFile {
@@ -15,77 +16,58 @@ public class CloudFile {
 	private String checksum;
 	private String lastValidationDate;
 	
-	private List<DataSource> dataSources;
+	private List<DataSource> dataSources = Lists.newArrayList();
 
-	public CloudFile() {
-	}
-
-	public CloudFile(String id) {
+	public CloudFile(String id, String name, String path, long size) {
 		this.id = id;
-	}
+        this.name = name;
+        this.path = path;
+        this.size = size;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getPath() {
+        return path;
+    }
 
-	public String getPath() {
-		return path;
-	}
+    public long getSize() {
+        return size;
+    }
 
-	public void setPath(String path) {
-		this.path = path;
-	}
+    public String getChecksum() {
+        return checksum;
+    }
 
-	public long getSize() {
-		return size;
-	}
+    public void setChecksum(String checksum) {
+        this.checksum = checksum;
+    }
 
-	public void setSize(long size) {
-		this.size = size;
-	}
+    public String getLastValidationDate() {
+        return lastValidationDate;
+    }
 
-	public String getChecksum() {
-		return checksum;
-	}
+    public void setLastValidationDate(String lastValidationDate) {
+        this.lastValidationDate = lastValidationDate;
+    }
 
-	public void setChecksum(String checksum) {
-		this.checksum = checksum;
-	}
+    public List<DataSource> getDataSources() {
+        return dataSources;
+    }
 
-	public String getLastValidationDate() {
-		return lastValidationDate;
-	}
+    public void setDataSources(List<DataSource> dataSources) {
+        this.dataSources = dataSources;
+    }
 
-	public void setLastValidationDate(String lastValidationDate) {
-		this.lastValidationDate = lastValidationDate;
-	}
-
-	public List<DataSource> getDataSources() {
-		return dataSources;
-	}
-
-	public void setDataSources(List<DataSource> dataSources) {
-		this.dataSources = dataSources;
-	}
-
-	@Override
+    @Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
+        return Objects.hashCode(id);
 	}
 
 	@Override
@@ -106,17 +88,5 @@ public class CloudFile {
 		}
 		
 		return true;
-	}
-	
-	public static Predicate getPredicate(final String idOrName) {
-		return new Predicate() {
-			
-			@Override
-			public boolean evaluate(Object object) {
-				CloudFile item = (CloudFile) object;
-				return item.getId().equals(idOrName) || item.getName().equals(idOrName);
-
-			}
-		};
 	}
 }

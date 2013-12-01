@@ -2,16 +2,16 @@ package vphshare.driservice.validation;
 
 import vphshare.driservice.domain.CloudFile;
 import vphshare.driservice.domain.CloudDirectory;
-import vphshare.driservice.notification.domain.DatasetReport;
+import vphshare.driservice.notification.domain.ValidationReport;
 
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(DefaultDatasetValidator.class)
 public interface DatasetValidator {
 	
-	DatasetReport computeChecksums(CloudDirectory dataset);
+	void computeChecksums(CloudDirectory directory);
 	
-	DatasetReport computeChecksum(CloudDirectory dataset, CloudFile item);
+	void computeChecksum(CloudDirectory directory, CloudFile file);
 
-	DatasetReport validate(CloudDirectory dataset);
+	ValidationReport validate(CloudDirectory directory);
 }

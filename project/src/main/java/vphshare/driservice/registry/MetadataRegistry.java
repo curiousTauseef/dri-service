@@ -8,12 +8,11 @@ import vphshare.driservice.registry.lobcder.LobcderMetadataRegistry;
 
 import com.google.inject.ImplementedBy;
 
-@ImplementedBy(LobcderMetadataRegistry.class)
 public interface MetadataRegistry {
 
 	List<CloudDirectory> getCloudDirectories(boolean onlyManaged);
 
-	CloudDirectory getCloudDirectory(String directoryId, boolean onlyManaged);
+	CloudDirectory getCloudDirectory(String directoryId);
 	
 	void setSupervised(CloudDirectory directory);
 

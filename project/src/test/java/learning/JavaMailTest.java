@@ -1,4 +1,4 @@
-package randomtests;
+package learning;
 
 import java.util.Properties;
 

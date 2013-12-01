@@ -1,6 +1,5 @@
 package vphshare.driservice.config;
 
-import static com.google.inject.Scopes.SINGLETON;
 import static com.google.inject.matcher.Matchers.annotatedWith;
 import static com.google.inject.matcher.Matchers.any;
 import static com.google.inject.matcher.Matchers.subclassesOf;
@@ -9,27 +8,27 @@ import static com.google.inject.name.Names.named;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.*;
 
+import javax.mail.Session;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 
-import org.quartz.SchedulerFactory;
-import org.quartz.impl.StdSchedulerFactory;
-
 import vphshare.driservice.aop.DRIServiceExceptionHandler;
 import vphshare.driservice.aop.MetadataRegistryExceptionHandler;
-import vphshare.driservice.providers.AIRConfigurationProvider;
-import vphshare.driservice.providers.ExecutorProvider;
-import vphshare.driservice.providers.LobcderConfigurationProvider;
+import vphshare.driservice.notification.CombinedNotificationService;
+import vphshare.driservice.providers.MasterInterfaceConfigurationProvider;
+import vphshare.driservice.notification.NotificationService;
+import vphshare.driservice.providers.EmailSessionProvider;
+import vphshare.driservice.registry.lobcder.LobcderConfigurationProvider;
 import vphshare.driservice.providers.PropertiesProvider;
-import vphshare.driservice.registry.AIRMetadataRegistry;
-import vphshare.driservice.scheduler.InjectingJobFactory;
-import vphshare.driservice.scheduler.PeriodicScheduler;
+import vphshare.driservice.registry.MetadataRegistry;
+import vphshare.driservice.registry.lobcder.LobcderMetadataRegistry;
 import vphshare.driservice.service.DRIServiceImpl;
+import vphshare.driservice.task.PeriodicScheduler;
 import vphshare.driservice.validation.DefaultValidationStrategy;
 import vphshare.driservice.validation.ValidationStrategy;
 
@@ -54,35 +53,44 @@ public class DRIGuiceServletModuleConfiguration extends JerseyServletModule {
 			protected void configure() {
 				bind(DRIServiceImpl.class);
 				bind(ValidationStrategy.class).to(DefaultValidationStrategy.class);
+                bind(MetadataRegistry.class).to(LobcderMetadataRegistry.class);
+                bind(ThreadPoolExecutor.class)
+                        .toInstance(new ThreadPoolExecutor(
+                                5, 5,
+                                0, TimeUnit.SECONDS,
+                                new ArrayBlockingQueue<Runnable>(20),
+                                Executors.defaultThreadFactory(),
+                                new ThreadPoolExecutor.AbortPolicy()));
+
+                // Notifications
+                bind(NotificationService.class).to(CombinedNotificationService.class);
+                bind(Session.class)
+                        .annotatedWith(named("email-notification"))
+                        .toProvider(EmailSessionProvider.class);
+                bind(WebResource.class)
+                        .annotatedWith(named("mi-notification"))
+                        .toProvider(MasterInterfaceConfigurationProvider.class);
 				
 				// Properties bindings
 				bindProperties(binder(), PropertiesProvider.getProperties());
 				
 				// Providers bindings
-				bind(ExecutorService.class).toProvider(ExecutorProvider.class);
-				bind(WebResource.class)
-					.annotatedWith(named("air-config"))
-					.toProvider(AIRConfigurationProvider.class);
 				bind(WebResource.class)
 					.annotatedWith(named("lobcder-config"))
 					.toProvider(LobcderConfigurationProvider.class);
-				
-				// run on startup quartz scheduler bindings
-				bind(SchedulerFactory.class).to(StdSchedulerFactory.class).in(SINGLETON);
-				bind(InjectingJobFactory.class).in(SINGLETON);
-				bind(PeriodicScheduler.class).in(SINGLETON);
-				bind(PeriodicScheduler.class).asEagerSingleton();
-				
+
+                // Periodic scheduling
+                bind(PeriodicScheduler.class).asEagerSingleton();
+
 				// AOP exception handling
-				
-				MetadataRegistryExceptionHandler mreHandler = new MetadataRegistryExceptionHandler();
-				requestInjection(mreHandler);
-				bindInterceptor(
-						subclassesOf(AIRMetadataRegistry.class), 
-						any(), 
+                MetadataRegistryExceptionHandler mreHandler = new MetadataRegistryExceptionHandler();
+                requestInjection(mreHandler);
+                bindInterceptor(
+						subclassesOf(LobcderMetadataRegistry.class),
+						any(),
 						mreHandler);
-				
-				DRIServiceExceptionHandler dseHandler = new DRIServiceExceptionHandler();
+
+                DRIServiceExceptionHandler dseHandler = new DRIServiceExceptionHandler();
 				requestInjection(dseHandler);
 				bindInterceptor(
 						annotatedWith(Path.class),

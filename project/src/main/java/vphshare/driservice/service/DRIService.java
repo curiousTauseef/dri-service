@@ -1,21 +1,19 @@
 package vphshare.driservice.service;
 
-import javax.ws.rs.core.Response;
-
-import org.quartz.SchedulerException;
-
 import com.google.inject.ImplementedBy;
+
+import javax.ws.rs.core.Response;
 
 @ImplementedBy(DRIServiceImpl.class)
 public interface DRIService {
 	
-	Response addToManagement(String datasetID) throws SchedulerException;
+	Response addToManagement(String datasetID);
 	
 	Response removeFromManagement(String datasetID);
 
-	Response updateChecksums(String datasetID) throws SchedulerException;
+	Response updateChecksums(String datasetID);
 
-	Response validateDataset(String datasetID) throws SchedulerException;
+	Response validateDataset(String datasetID);
 	
-	Response updateSingleItemChecksum(String datasetID, String itemID) throws SchedulerException;
+	Response updateSingleItemChecksum(String datasetID, String itemID);
 }

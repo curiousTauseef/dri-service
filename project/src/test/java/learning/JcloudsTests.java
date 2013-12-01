@@ -1,4 +1,4 @@
-package randomtests;
+package learning;
 
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.BlobStoreContext;

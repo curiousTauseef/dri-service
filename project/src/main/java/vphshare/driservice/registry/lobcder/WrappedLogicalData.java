@@ -1,51 +1,42 @@
 package vphshare.driservice.registry.lobcder;
 
+import vphshare.driservice.domain.DataSource;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import vphshare.driservice.domain.DataSource;
+import java.util.ArrayList;
+import java.util.List;
 
 @XmlRootElement(name = "logicalDataWrapped")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.NONE)
 public class WrappedLogicalData {
 
+    @XmlElement(required = true)
 	private LogicalData logicalData;
+    @XmlElement(required = true)
 	private String path;
-	private String permissions;
 	@XmlElement(name = "pdriList")
-	private DataSource dataSource;
+	private List<DataSource> dataSources = new ArrayList<DataSource>();
 	
 	public LogicalData getLogicalData() {
 		return logicalData;
 	}
-	
-	public void setLogicalData(LogicalData logicalData) {
-		this.logicalData = logicalData;
-	}
-	
+
+    public void setLogicalData(LogicalData logicalData) {
+        this.logicalData = logicalData;
+    }
+
 	public String getPath() {
 		return path;
 	}
-	
+
 	public void setPath(String path) {
 		this.path = path;
 	}
-	
-	public String getPermissions() {
-		return permissions;
-	}
-	
-	public void setPermissions(String permissions) {
-		this.permissions = permissions;
-	}
-	
-	public DataSource getDataSource() {
-		return dataSource;
-	}
-	
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
+
+	public List<DataSource> getDataSources() {
+		return dataSources;
 	}
 }

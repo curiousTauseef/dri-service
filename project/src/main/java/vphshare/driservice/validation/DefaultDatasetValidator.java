@@ -1,135 +1,109 @@
 package vphshare.driservice.validation;
 
-import static vphshare.driservice.notification.domain.ValidationStatus.INTEGRITY_ERROR;
-import static vphshare.driservice.notification.domain.ValidationStatus.UNAVAILABLE;
-import static vphshare.driservice.notification.domain.ValidationStatus.VALID;
-
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.inject.Inject;
-
+import org.apache.log4j.Logger;
 import org.jclouds.blobstore.BlobStoreContext;
-import org.jclouds.blobstore.ContainerNotFoundException;
-
-import vphshare.driservice.domain.DataSource;
-import vphshare.driservice.domain.CloudFile;
 import vphshare.driservice.domain.CloudDirectory;
-import vphshare.driservice.exceptions.ResourceNotFoundException;
-import vphshare.driservice.notification.domain.DatasetReport;
-import vphshare.driservice.notification.domain.ValidationStatus;
+import vphshare.driservice.domain.CloudFile;
+import vphshare.driservice.domain.DataSource;
+import vphshare.driservice.notification.domain.ValidationReport;
 import vphshare.driservice.providers.BlobStoreContextProvider;
 import vphshare.driservice.registry.MetadataRegistry;
+import vphshare.driservice.util.ValidationUtil;
+
+import javax.inject.Inject;
+import java.util.List;
+
+import static vphshare.driservice.notification.domain.ValidationStatus.INTEGRITY_ERROR;
+import static vphshare.driservice.notification.domain.ValidationStatus.UNAVAILABLE;
 
 public class DefaultDatasetValidator implements DatasetValidator {
-	
-	private static final Logger LOG = Logger.getLogger(DefaultDatasetValidator.class.getName());
 
-	@Inject
-	protected MetadataRegistry registry;
-	
-	@Inject 
-	ValidationStrategy strategy;
+    private static final Logger logger = Logger.getLogger(DefaultDatasetValidator.class);
 
-	public DefaultDatasetValidator() {}
+	private final MetadataRegistry registry;
+	private final ValidationStrategy strategy;
 
-	@Override
-	public DatasetReport computeChecksums(CloudDirectory dataset) {
-		DatasetReport report = new DatasetReport(dataset);
-		report.setStatus(VALID);
-		List<CloudFile> items = registry.getCloudFiles(dataset);
-		LOG.log(Level.INFO, "Found " + items.size() + " items!");
-		computeChecksumsForEachLogicalData(dataset, report, items);
-		return report;
+    @Inject
+    public DefaultDatasetValidator(MetadataRegistry registry, ValidationStrategy strategy) {
+        this.registry = registry;
+        this.strategy = strategy;
+    }
+
+    @Override
+	public void computeChecksums(CloudDirectory directory) {
+		List<CloudFile> files = registry.getCloudFiles(directory);
+		logger.info(String.format("Found [%d] files", files.size()));
+		computeForEachFile(directory, files);
 	}
 
-	private void computeChecksumsForEachLogicalData(CloudDirectory dataset, DatasetReport report, List<CloudFile> items) {
-		for (CloudFile item : items) {
-			if (item.getDataSources().size() > 0) {
-				BlobStoreContext context = null;
-				try {
-					context = BlobStoreContextProvider.getContext(item.getDataSources().get(0));
-					item.setChecksum(strategy.setup(dataset, item, item.getDataSources().get(0), context));
-					registry.updateChecksum(dataset, item);
-				
-				} catch (ResourceNotFoundException e) {
-					report.addEntryLog(item.getName(), UNAVAILABLE);
-				} finally {
-					context.close();
-				}
+	private void computeForEachFile(CloudDirectory directory, List<CloudFile> files) {
+		for (CloudFile file : files) {
+			if (ValidationUtil.hasNonZeroDataSources(file)) {
+                computeChecksum(directory, file, file.getDataSources().get(0));
 			}
 		}
 	}
 
-	@Override
-	public DatasetReport validate(CloudDirectory dataset) {
-		List<CloudFile> items = registry.getCloudFiles(dataset);
-		DatasetReport report = new DatasetReport(dataset);
-		report.setStatus(VALID);
+    private void computeChecksum(CloudDirectory directory, CloudFile file, DataSource dataSource) {
+        BlobStoreContext context = null;
+        try {
+            context = BlobStoreContextProvider.getContext(dataSource);
+            String checksum = strategy.setup(directory, file, dataSource, context);
+            file.setChecksum(checksum);
+            registry.updateChecksum(directory, file);
 
-		try {
-			validateDatasetItems(dataset, items, report);
+        } catch (Exception e) {
+            logger.error(String.format("Error on updating file [%s] checksum value in metadata registry", file.getName()), e);
+            throw new RuntimeException(e);
+        } finally {
+            if (context != null) {
+                context.close();
+            }
+        }
+    }
 
-		// TODO Swift doesn't throw this exception when container is deleted...
-		} catch (ContainerNotFoundException e) {
-			report.setStatus(UNAVAILABLE);
-			report.setTitle("Dataset doesn't exist");
-		}
-
-		if (report.isValid()) {
-			report.setTitle("Dataset valid");
-		} else {
-			report.setTitle("Dataset invalid");
-		}
-		
+    @Override
+	public ValidationReport validate(CloudDirectory directory) {
+		List<CloudFile> files = registry.getCloudFiles(directory);
+		ValidationReport report = new ValidationReport(directory);
+        validateAllFiles(directory, files, report);
 		return report;
 	}
 
-	private void validateDatasetItems(CloudDirectory dataset, List<CloudFile> items, DatasetReport report) {
-		for (CloudFile item : items) {
-			validateLogicalData(dataset, item, report);
+	private void validateAllFiles(CloudDirectory directory, List<CloudFile> files, ValidationReport report) {
+		for (CloudFile file : files) {
+            for (DataSource ds : file.getDataSources()) {
+                validateFile(directory, file, ds, report);
+            }
 		}
 	}
 
-	private void validateLogicalData(CloudDirectory dataset, CloudFile item, DatasetReport report) {
-		for (DataSource ds : item.getDataSources()) {
-			validateLogicalDataOnDataSource(dataset, item, ds, report);
-		}
-	}
-	
-	private void validateLogicalDataOnDataSource(CloudDirectory dataset, CloudFile item, DataSource ds, DatasetReport report) {
-		BlobStoreContext context = BlobStoreContextProvider.getContext(ds);
+	private void validateFile(CloudDirectory directory, CloudFile file, DataSource ds, ValidationReport report) {
+		BlobStoreContext context = null;
 		try {
-			ValidationStatus status = validateLogicalData(dataset, item, ds, context);
-			if (!status.isValid()) {
-				report.addEntryLog(item.getName(), status);
-			}
+            context = BlobStoreContextProvider.getContext(ds);
+            boolean isValid = strategy.validate(directory, file, ds, context);
+            if (!isValid) {
+                report.addEntryLog(file.getName(), INTEGRITY_ERROR);
+            }
 
-		} catch (ResourceNotFoundException e) {
-			report.addEntryLog(item.getName(), UNAVAILABLE);
-		} finally {
-			context.close();
+		} catch (Exception e) {
+            logger.error(String.format("File [%s] validation failed", file.getName()), e);
+            report.addEntryLog(file.getName(), UNAVAILABLE);
+        } finally {
+            if (context != null) {
+			    context.close();
+            }
 		}
-	}
-
-	protected ValidationStatus validateLogicalData(CloudDirectory dataset, CloudFile item, DataSource ds, BlobStoreContext context) {
-		return strategy.validate(dataset, item, ds, context) ? VALID : INTEGRITY_ERROR;
 	}
 
 	@Override
-	public DatasetReport computeChecksum(CloudDirectory dataset, CloudFile item) {
-		DatasetReport report = new DatasetReport(dataset);
-		BlobStoreContext context = BlobStoreContextProvider.getContext(item.getDataSources().get(0));
-		
-		try {
-			item.setChecksum(strategy.setup(dataset, item, item.getDataSources().get(0), context));
-			registry.updateChecksum(dataset, item);
-		
-		} catch (ResourceNotFoundException e) {
-			report.addEntryLog(item.getName(), UNAVAILABLE);
-		}
-		
-		return report;
+	public void computeChecksum(CloudDirectory directory, CloudFile file) {
+        DataSource dataSource = file.getDataSources().get(0);
+        BlobStoreContext context = BlobStoreContextProvider.getContext(dataSource);
+
+        String checksum = strategy.setup(directory, file, dataSource, context);
+        file.setChecksum(checksum);
+        registry.updateChecksum(directory, file);
 	}
 }

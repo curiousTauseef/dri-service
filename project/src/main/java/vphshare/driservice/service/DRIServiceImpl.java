@@ -1,100 +1,115 @@
 package vphshare.driservice.service;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
-
 import org.apache.log4j.Logger;
-import org.quartz.SchedulerException;
-
 import vphshare.driservice.domain.CloudDirectory;
 import vphshare.driservice.domain.CloudFile;
-import vphshare.driservice.exceptions.ResourceNotFoundException;
 import vphshare.driservice.registry.MetadataRegistry;
-import vphshare.driservice.scheduler.TaskSubmitter;
+import vphshare.driservice.task.TaskBuilder;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
+import java.util.concurrent.ThreadPoolExecutor;
+
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Path("/")
 public class DRIServiceImpl implements DRIService {
 
-	private static final Logger logger = Logger.getLogger(DRIService.class);
+    private static final Logger logger = Logger.getLogger(DRIServiceImpl.class);
 
-	@Inject
+    private static final Response OK_RESPONSE = Response.ok().build();
+    public static final Response NOT_MODIFIED_RESPONSE = Response.notModified().build();
+
+    @Inject
 	protected MetadataRegistry registry;
-	@Inject 
-	protected TaskSubmitter submitter;
+    @Inject
+    protected ThreadPoolExecutor executor;
+    @Inject
+    protected TaskBuilder taskBuilder;
 
-	public DRIServiceImpl() {}
+    public DRIServiceImpl() {}
 	
 	@Override
-	@GET
+	@POST
 	@Produces(APPLICATION_JSON)
-	@Path("add_to_management/{directoryId}")
-	public Response addToManagement(@PathParam("directoryId") final String directoryId) throws SchedulerException {
-		logger.info("Invoking [/add_to_management/" + directoryId + "]");
-		CloudDirectory dir = null;
-		try {
-			dir = registry.getCloudDirectory(directoryId, true);
-		
-		// Not found in managed datasets
-		} catch (ResourceNotFoundException e) {
-			dir = registry.getCloudDirectory(directoryId, false);
-			submitter.submitComputeChecksumsJob(dir);
-			registry.setSupervised(dir);
-			return Response.ok("Dataset " + directoryId + " scheduled to be added to management.").build();
-		}
-		
-		logger.warn("Directory already set as managed [id=" + directoryId + "]");
-		return Response.ok("Dataset " + directoryId + " is already under management").build();
+	@Path("dataset/{id}/manage/set")
+	public Response addToManagement(@PathParam("id") final String id) {
+		logger.info(String.format("Invoking [/dataset/%s/manage/set", id));
+        CloudDirectory dir = registry.getCloudDirectory(id);
+        if (dir.isSupervised()) {
+            logger.warn(String.format("Directory already set as managed [id=%s]", id));
+            return Response.notModified().build();
+        } else {
+            executor.execute(taskBuilder.computeChecksums(dir));
+            registry.setSupervised(dir);
+            return OK_RESPONSE;
+        }
 	}
 	
 	@Override
-	@GET
+	@DELETE
 	@Produces(APPLICATION_JSON)
-	@Path("remove_from_management/{directoryId}")
-	public Response removeFromManagement(@PathParam("directoryId") final String directoryId) {
-		logger.info("Invoking [/remove_from_management/" + directoryId + "]");
-		CloudDirectory dir = registry.getCloudDirectory(directoryId, true);
-		registry.unsetSupervised(dir);
-		return Response.ok("Dataset " + directoryId + " removed from management.").build();
+	@Path("dataset/{id}/manage/unset")
+	public Response removeFromManagement(@PathParam("id") final String id) {
+		logger.info(String.format("Invoking [/dataset/%s/manage/unset", id));
+		CloudDirectory dir = registry.getCloudDirectory(id);
+        if (dir.isSupervised()) {
+            registry.unsetSupervised(dir);
+            return OK_RESPONSE;
+        } else {
+            logger.warn(String.format("Directory %s is not supervised", dir));
+            return NOT_MODIFIED_RESPONSE;
+        }
 	}
 
 	@Override
-	@GET
+	@PUT
 	@Produces(APPLICATION_JSON)
-	@Path("update_checksums/{directoryId}")
-	public Response updateChecksums(@PathParam("directoryId") final String directoryId) throws SchedulerException {
-		logger.info("Invoking [/update_checksums/" + directoryId + "]");
-		CloudDirectory dir = registry.getCloudDirectory(directoryId, true);
-		submitter.submitComputeChecksumsJob(dir);
-		return Response.ok("Dataset " + directoryId + " was submitted to update its checksums.").build();
+	@Path("dataset/{id}/checksum/update")
+	public Response updateChecksums(@PathParam("id") final String id) {
+		logger.info(String.format("Invoking [/dataset/%s/checksum/update", id));
+		CloudDirectory dir = registry.getCloudDirectory(id);
+        if (dir.isSupervised()) {
+            executor.execute(taskBuilder.computeChecksums(dir));
+            return OK_RESPONSE;
+        } else {
+            logger.warn(String.format("Directory %s is not supervised", dir));
+            return NOT_MODIFIED_RESPONSE;
+        }
 	}
 	
 	@Override
-	@GET
+	@PUT
 	@Produces(APPLICATION_JSON)
-	@Path("update_single_item/{directoryId}/{fileId}")
-	public Response updateSingleItemChecksum(@PathParam("directoryId") final String directoryId,
-											 @PathParam("fileId") final String fileId) throws SchedulerException {
-		logger.info("Invoking [/update_single_item/" + directoryId + "/" + fileId + "]");
-		CloudDirectory dir = registry.getCloudDirectory(directoryId, true);
-		CloudFile file = registry.getCloudFile(dir, fileId);
-		submitter.submitUpdateSingleItemChecksumJob(dir, file);
-		return Response.ok("Item " + fileId + " was submitted to update its checksum.").build();
+	@Path("dataset/{id}/item/{fileId}")
+	public Response updateSingleItemChecksum(@PathParam("id") final String id,
+											 @PathParam("fileId") final String fileId) {
+		logger.info(String.format("Invoking [/dataset/%s/item/%s", id, fileId));
+		CloudDirectory dir = registry.getCloudDirectory(id);
+        if (dir.isSupervised()) {
+		    CloudFile file = registry.getCloudFile(dir, fileId);
+            executor.execute(taskBuilder.updateDatasetItem(dir, file));
+            return OK_RESPONSE;
+        } else {
+            logger.warn(String.format("Directory %s is not supervised", dir));
+            return NOT_MODIFIED_RESPONSE;
+        }
 	}
 
 	@Override
-	@GET
+	@POST
 	@Produces(APPLICATION_JSON)
-	@Path("validate_dataset/{directoryId}")
-	public Response validateDataset(@PathParam("directoryId") final String directoryId) throws SchedulerException {
-		logger.info("Invoking [/validate_dataset/" + directoryId + "]");
-		CloudDirectory dir = registry.getCloudDirectory(directoryId, true);
-		submitter.submitValidationJob(dir);
-		return Response.ok("Dataset " + directoryId + " was submitted to validation.").build();
+	@Path("dataset/{id}/validate")
+	public Response validateDataset(@PathParam("id") final String id) {
+		logger.info(String.format("Invoking [/validate_dataset/%s]", id));
+		CloudDirectory dir = registry.getCloudDirectory(id);
+        if (dir.isSupervised()) {
+            executor.execute(taskBuilder.validateDataset(dir));
+            return OK_RESPONSE;
+        } else {
+            logger.warn(String.format("Directory %s is not supervised", dir));
+            return NOT_MODIFIED_RESPONSE;
+        }
 	}
 }
