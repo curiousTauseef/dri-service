@@ -20,6 +20,8 @@ import javax.ws.rs.Path;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import vphshare.driservice.aop.DRIServiceExceptionHandler;
 import vphshare.driservice.aop.MetadataRegistryExceptionHandler;
+import vphshare.driservice.auth.AuthConfigProvider;
+import vphshare.driservice.auth.AuthService;
 import vphshare.driservice.notification.CombinedNotificationService;
 import vphshare.driservice.providers.MasterInterfaceConfigurationProvider;
 import vphshare.driservice.notification.NotificationService;
@@ -52,6 +54,10 @@ public class DRIGuiceServletModuleConfiguration extends JerseyServletModule {
 			
 			@Override
 			protected void configure() {
+
+                // Properties bindings
+                bindProperties(binder(), PropertiesProvider.getProperties());
+
 				bind(DRIServiceImpl.class);
 				bind(ValidationStrategy.class).to(DefaultValidationStrategy.class);
 
@@ -67,6 +73,11 @@ public class DRIGuiceServletModuleConfiguration extends JerseyServletModule {
                                     .build(),
                                 new ThreadPoolExecutor.AbortPolicy()));
 
+                // Auth
+                bind(WebResource.class)
+                        .annotatedWith(named("auth-config"))
+                        .toProvider(AuthConfigProvider.class);
+
                 // Notifications
                 bind(NotificationService.class).to(CombinedNotificationService.class);
                 bind(Session.class)
@@ -75,9 +86,6 @@ public class DRIGuiceServletModuleConfiguration extends JerseyServletModule {
                 bind(WebResource.class)
                         .annotatedWith(named("mi-notification"))
                         .toProvider(MasterInterfaceConfigurationProvider.class);
-				
-				// Properties bindings
-				bindProperties(binder(), PropertiesProvider.getProperties());
 				
 				// Lobcder metadata registry
 				bind(WebResource.class)

@@ -238,6 +238,10 @@
                 <version>2.1</version>
                 <configuration>
                     <path>/</path>
+                    <systemProperties>
+                        <javax.net.ssl.trustStore>/home/kstyrc/workspace/vph-share-workspace/dri-service/project/src/main/resources/cacerts</javax.net.ssl.trustStore>
+                        <javax.net.ssl.trustStorePassword>7jb9l155</javax.net.ssl.trustStorePassword>
+                    </systemProperties>
                 </configuration>
             </plugin>
 		</plugins>

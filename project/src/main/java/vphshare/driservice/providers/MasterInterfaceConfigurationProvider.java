@@ -15,10 +15,6 @@ public class MasterInterfaceConfigurationProvider implements Provider<WebResourc
 
     @Inject @Named("mi.baseurl")
     private String baseURL;
-    @Inject @Named("mi.username")
-    private String username;
-    @Inject @Named("mi.password")
-    private String password;
     @Inject @Named("mi.read_timeout")
     private int readTimeout;
 
@@ -26,13 +22,11 @@ public class MasterInterfaceConfigurationProvider implements Provider<WebResourc
 
     @Override
     public WebResource get() {
-        HTTPBasicAuthFilter httpBasicAuthFilter = new HTTPBasicAuthFilter(username, password);
         ClientConfig config = new DefaultClientConfig();
         config.getClasses().add(JsonPlainTextEnablingProvider.class);
 
         Client client = Client.create(config);
         client.setReadTimeout(readTimeout);
-        client.addFilter(httpBasicAuthFilter);
 
         return client.resource(baseURL);
     }
