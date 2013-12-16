@@ -5,7 +5,9 @@ import org.jclouds.ContextBuilder;
 import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.enterprise.config.EnterpriseConfigurationModule;
 import org.jclouds.logging.config.NullLoggingModule;
+import org.jclouds.openstack.swift.SwiftKeystoneApiMetadata;
 import vphshare.driservice.domain.DataSource;
+import vphshare.driservice.util.SwiftURL;
 
 import java.util.Properties;
 
@@ -39,11 +41,12 @@ public class BlobStoreContextProvider {
 
 	private static BlobStoreContext createSwiftBlobStore(DataSource ds) {
 		Properties overrides = new Properties();
-		String endpoint = ds.getResourceUrl().replace("swift", "http");
+        String endpoint = ds.getResourceUrl().replace("swift", "http");
 		overrides.setProperty(PROPERTY_ENDPOINT, endpoint);
 		overrides.setProperty(PROPERTY_TRUST_ALL_CERTS, "true");
 		overrides.setProperty(PROPERTY_RELAX_HOSTNAME, "true");
-		return ContextBuilder.newBuilder("swift")
+        overrides.setProperty(PROPERTY_CONNECTION_TIMEOUT, Integer.toString(5000));
+		return ContextBuilder.newBuilder(new SwiftKeystoneApiMetadata())
                 .endpoint(endpoint)
                 .credentials(ds.getUsername(), ds.getPassword())
                 .modules(Lists.newArrayList(new EnterpriseConfigurationModule(), new NullLoggingModule()))

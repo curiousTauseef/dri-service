@@ -1,6 +1,6 @@
 package vphshare.driservice.notification;
 
-import org.codehaus.plexus.util.ExceptionUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import vphshare.driservice.domain.CloudDirectory;
 import vphshare.driservice.notification.domain.Notification;
 

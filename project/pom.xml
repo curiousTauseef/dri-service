@@ -27,14 +27,14 @@
 	<repository>
 		<id>dri.repository</id>
 		<url>scp://SERVER.COM</url>
-	</repository>	
+	</repository>
 </distributionManagement>
 
 <properties>
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	
+
 	<tomcat.remote.dir>scp://vph.cyfronet.pl/home/dri/apache-tomcat-7.0.23/webapps</tomcat.remote.dir>
-	
+
 	<org.springframework.version>3.1.0.RELEASE</org.springframework.version>
 	<jersey-version>1.11</jersey-version>
 	<jclouds-version>1.6.0</jclouds-version>
@@ -98,41 +98,31 @@
 		<version>${jersey-version}</version>
 	</dependency>
     <dependency>
-        <groupId>org.jclouds</groupId>
-        <artifactId>jclouds-all</artifactId>
-        <version>1.6.0</version>
+        <groupId>org.apache.jclouds.driver</groupId>
+        <artifactId>jclouds-enterprise</artifactId>
+        <version>1.6.3</version>
     </dependency>
     <dependency>
-        <groupId>org.jclouds.driver</groupId>
-        <artifactId>jclouds-enterprise</artifactId>
-        <version>1.6.0</version>
+        <groupId>org.apache.jclouds.provider</groupId>
+        <artifactId>aws-s3</artifactId>
+        <version>1.6.3</version>
     </dependency>
+    <dependency>
+        <groupId>org.apache.jclouds.api</groupId>
+        <artifactId>swift</artifactId>
+        <version>1.6.3</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.jclouds.api</groupId>
+        <artifactId>s3</artifactId>
+        <version>1.6.3</version>
+        </dependency>
     <dependency>
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
         <version>2.3</version>
     </dependency>
-    <!--<dependency>-->
-		<!--<groupId>org.jclouds.provider</groupId>-->
-		<!--<artifactId>aws-s3</artifactId>-->
-		<!--<version>${jclouds-version}</version>-->
-	<!--</dependency>-->
-	<!--<dependency>-->
-		<!--<groupId>org.jclouds.api</groupId>-->
-		<!--<artifactId>swift</artifactId>-->
-		<!--<version>${jclouds-version}</version>-->
-	<!--</dependency>-->
-		<!--<dependency>-->
-		<!--<groupId>org.jclouds.api</groupId>-->
-		<!--<artifactId>s3</artifactId>-->
-		<!--<version>${jclouds-version}</version>-->
-	<!--</dependency>-->
-	<!--<dependency>-->
-		<!--<groupId>org.jclouds.driver</groupId>-->
-		<!--<artifactId>jclouds-enterprise</artifactId> -->
-		<!--<version>${jclouds-version}</version> -->
-	<!--</dependency>-->
-	<dependency>
+    <dependency>
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
         <version>2.4</version>
@@ -144,13 +134,13 @@
     </dependency>
 	<dependency>
 		<groupId>commons-codec</groupId>
-		<artifactId>commons-codec</artifactId> 
-		<version>1.6</version> 
+		<artifactId>commons-codec</artifactId>
+		<version>1.6</version>
 	</dependency>
 	<dependency>
 		<groupId>commons-io</groupId>
-		<artifactId>commons-io</artifactId> 
-		<version>2.1</version> 
+		<artifactId>commons-io</artifactId>
+		<version>2.1</version>
 	</dependency>
 	<dependency>
 		<groupId>javax.mail</groupId>
@@ -161,7 +151,7 @@
 		<groupId>log4j</groupId>
 		<artifactId>log4j</artifactId>
 		<version>1.2.16</version>
-	</dependency>        
+	</dependency>
 	<dependency>
 		<groupId>junit</groupId>
 		<artifactId>junit</artifactId>
@@ -320,7 +310,7 @@
 				<url>${tomcat.remote.dir}</url>
 			</configuration>
 			<executions>
-				<!-- uncomment to attach war upload via ssh to the deploy phase 
+				<!-- uncomment to attach war upload via ssh to the deploy phase
 				<execution>
 					<id>upload-war-to-server</id>
 					<phase>deploy</phase>
