@@ -104,7 +104,7 @@ public class DRIGuiceServletModuleConfiguration extends JerseyServletModule {
                 MetadataRegistryExceptionHandler mreHandler = new MetadataRegistryExceptionHandler();
                 requestInjection(mreHandler);
                 bindInterceptor(
-						subclassesOf(LobcderMetadataRegistry.class),
+						subclassesOf(MetadataRegistry.class),
 						any(),
 						mreHandler);
 

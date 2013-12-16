@@ -22,12 +22,12 @@ public class MetadataRegistryExceptionHandler implements MethodInterceptor {
 		
 		} catch (ClientHandlerException che) {
             AppException  ae = handleException(che);
-            logger.error("MetadataRegistry invocation exception", ae);
+            logger.error("MetadataRegistry invocation exception", che);
             throw ae;
 
         } catch (UniformInterfaceException uie) {
             AppException  ae = handleException(uie);
-            logger.error("MetadataRegistry invocation exception", ae);
+            logger.error("MetadataRegistry invocation exception", uie);
             throw ae;
 		}
 	}
