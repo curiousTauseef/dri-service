@@ -33,9 +33,9 @@ public class DRIServiceImpl implements DRIService {
 	@Override
 	@POST
 	@Produces(APPLICATION_JSON)
-	@Path("dataset/{id}/manage/set")
+	@Path("dataset/{id}/add_to_management")
 	public Response addToManagement(@PathParam("id") final String id) {
-		logger.info(String.format("Invoking [/dataset/%s/manage/set", id));
+		logger.info(String.format("Invoking [/dataset/%s/add_to_management", id));
         CloudDirectory dir = registry.getCloudDirectory(id);
         if (dir.isSupervised()) {
             logger.warn(String.format("Directory already set as managed [id=%s]", id));
@@ -50,9 +50,9 @@ public class DRIServiceImpl implements DRIService {
 	@Override
 	@DELETE
 	@Produces(APPLICATION_JSON)
-	@Path("dataset/{id}/manage/unset")
+	@Path("dataset/{id}/remove_from_management")
 	public Response removeFromManagement(@PathParam("id") final String id) {
-		logger.info(String.format("Invoking [/dataset/%s/manage/unset", id));
+		logger.info(String.format("Invoking [/dataset/%s/remove_from_management", id));
 		CloudDirectory dir = registry.getCloudDirectory(id);
         if (dir.isSupervised()) {
             registry.unsetSupervised(dir);
@@ -66,9 +66,9 @@ public class DRIServiceImpl implements DRIService {
 	@Override
 	@PUT
 	@Produces(APPLICATION_JSON)
-	@Path("dataset/{id}/checksum/update")
+	@Path("dataset/{id}/update_checksums")
 	public Response updateChecksums(@PathParam("id") final String id) {
-		logger.info(String.format("Invoking [/dataset/%s/checksum/update", id));
+		logger.info(String.format("Invoking [/dataset/%s/update_checksums", id));
 		CloudDirectory dir = registry.getCloudDirectory(id);
         if (dir.isSupervised()) {
             executor.execute(taskBuilder.computeChecksums(dir));
@@ -82,10 +82,10 @@ public class DRIServiceImpl implements DRIService {
 	@Override
 	@PUT
 	@Produces(APPLICATION_JSON)
-	@Path("dataset/{id}/item/{fileId}")
+	@Path("dataset/{id}/item/{fileId}/update_checksum")
 	public Response updateSingleItemChecksum(@PathParam("id") final String id,
 											 @PathParam("fileId") final String fileId) {
-		logger.info(String.format("Invoking [/dataset/%s/item/%s", id, fileId));
+		logger.info(String.format("Invoking [/dataset/%s/item/%s/update_checksum", id, fileId));
 		CloudDirectory dir = registry.getCloudDirectory(id);
         if (dir.isSupervised()) {
 		    CloudFile file = registry.getCloudFile(dir, fileId);
@@ -102,7 +102,7 @@ public class DRIServiceImpl implements DRIService {
 	@Produces(APPLICATION_JSON)
 	@Path("dataset/{id}/validate")
 	public Response validateDataset(@PathParam("id") final String id) {
-		logger.info(String.format("Invoking [/validate_dataset/%s]", id));
+		logger.info(String.format("Invoking [/dataset/%s/validate]", id));
 		CloudDirectory dir = registry.getCloudDirectory(id);
         if (dir.isSupervised()) {
             executor.execute(taskBuilder.validateDataset(dir));
