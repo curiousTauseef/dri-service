@@ -37,8 +37,7 @@
 	
 	<org.springframework.version>3.1.0.RELEASE</org.springframework.version>
 	<jersey-version>1.11</jersey-version>
-	<jclouds-version>1.4.0</jclouds-version>
-	<guice-version>3.0</guice-version>
+	<jclouds-version>1.6.0</jclouds-version>
 	<embed-tomcat-version>7.0.42</embed-tomcat-version>
 </properties>
 
@@ -60,17 +59,12 @@
     <dependency>
 		<groupId>com.google.inject</groupId>
 		<artifactId>guice</artifactId>
-		<version>${guice-version}</version>
+		<version>3.0</version>
 	</dependency>
 	<dependency>
 		<groupId>com.google.inject.extensions</groupId>
 		<artifactId>guice-servlet</artifactId>
-		<version>${guice-version}</version>
-	</dependency>
-	<dependency>
-		<groupId>javax.inject</groupId>
-		<artifactId>javax.inject</artifactId>
-		<version>1</version>
+		<version>3.0</version>
 	</dependency>
 	<dependency>
 		<groupId>javax.servlet</groupId>
@@ -103,26 +97,41 @@
 		<artifactId>jersey-guice</artifactId>
 		<version>${jersey-version}</version>
 	</dependency>
-	<dependency>
-		<groupId>org.jclouds.provider</groupId>
-		<artifactId>aws-s3</artifactId>
-		<version>${jclouds-version}</version>
-	</dependency>
-	<dependency>
-		<groupId>org.jclouds.api</groupId>
-		<artifactId>swift</artifactId>
-		<version>${jclouds-version}</version>
-	</dependency>
-		<dependency>
-		<groupId>org.jclouds.api</groupId>
-		<artifactId>s3</artifactId>
-		<version>${jclouds-version}</version>
-	</dependency>
-	<dependency>
-		<groupId>org.jclouds.driver</groupId>
-		<artifactId>jclouds-enterprise</artifactId> 
-		<version>${jclouds-version}</version> 
-	</dependency>
+    <dependency>
+        <groupId>org.jclouds</groupId>
+        <artifactId>jclouds-all</artifactId>
+        <version>1.6.0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.jclouds.driver</groupId>
+        <artifactId>jclouds-enterprise</artifactId>
+        <version>1.6.0</version>
+    </dependency>
+    <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>2.3</version>
+    </dependency>
+    <!--<dependency>-->
+		<!--<groupId>org.jclouds.provider</groupId>-->
+		<!--<artifactId>aws-s3</artifactId>-->
+		<!--<version>${jclouds-version}</version>-->
+	<!--</dependency>-->
+	<!--<dependency>-->
+		<!--<groupId>org.jclouds.api</groupId>-->
+		<!--<artifactId>swift</artifactId>-->
+		<!--<version>${jclouds-version}</version>-->
+	<!--</dependency>-->
+		<!--<dependency>-->
+		<!--<groupId>org.jclouds.api</groupId>-->
+		<!--<artifactId>s3</artifactId>-->
+		<!--<version>${jclouds-version}</version>-->
+	<!--</dependency>-->
+	<!--<dependency>-->
+		<!--<groupId>org.jclouds.driver</groupId>-->
+		<!--<artifactId>jclouds-enterprise</artifactId> -->
+		<!--<version>${jclouds-version}</version> -->
+	<!--</dependency>-->
 	<dependency>
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>

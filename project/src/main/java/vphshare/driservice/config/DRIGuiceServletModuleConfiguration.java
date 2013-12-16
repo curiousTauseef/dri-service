@@ -22,6 +22,7 @@ import vphshare.driservice.aop.DRIServiceExceptionHandler;
 import vphshare.driservice.aop.MetadataRegistryExceptionHandler;
 import vphshare.driservice.auth.AuthConfigProvider;
 import vphshare.driservice.auth.AuthService;
+import vphshare.driservice.auth.AuthServiceImpl;
 import vphshare.driservice.notification.CombinedNotificationService;
 import vphshare.driservice.providers.MasterInterfaceConfigurationProvider;
 import vphshare.driservice.notification.NotificationService;
@@ -77,6 +78,9 @@ public class DRIGuiceServletModuleConfiguration extends JerseyServletModule {
                 bind(WebResource.class)
                         .annotatedWith(named("auth-config"))
                         .toProvider(AuthConfigProvider.class);
+                bind(AuthService.class)
+                       .to(AuthServiceImpl.class)
+                        .asEagerSingleton();
 
                 // Notifications
                 bind(NotificationService.class).to(CombinedNotificationService.class);

@@ -1,24 +1,18 @@
 package vphshare.driservice.providers;
 
-import static org.jclouds.Constants.PROPERTY_ENDPOINT;
-import static org.jclouds.Constants.PROPERTY_RELAX_HOSTNAME;
-import static org.jclouds.Constants.PROPERTY_TRUST_ALL_CERTS;
+import com.google.common.collect.Lists;
+import org.jclouds.ContextBuilder;
+import org.jclouds.blobstore.BlobStoreContext;
+import org.jclouds.enterprise.config.EnterpriseConfigurationModule;
+import org.jclouds.logging.config.NullLoggingModule;
+import vphshare.driservice.domain.DataSource;
 
 import java.util.Properties;
 
-import org.jclouds.blobstore.BlobStoreContext;
-import org.jclouds.blobstore.BlobStoreContextFactory;
-import org.jclouds.enterprise.config.EnterpriseConfigurationModule;
-import org.jclouds.logging.config.NullLoggingModule;
-
-import vphshare.driservice.domain.DataSource;
-
-import com.google.common.collect.ImmutableSet;
-import com.google.inject.Module;
+import static org.jclouds.Constants.*;
 
 public class BlobStoreContextProvider {
 
-	private static final BlobStoreContextFactory contextFactory = new BlobStoreContextFactory();
 	private static Properties properties = PropertiesProvider.getProperties();
 	
 	private BlobStoreContextProvider() {}
@@ -36,26 +30,24 @@ public class BlobStoreContextProvider {
 		Properties overrides = new Properties();
 		overrides.setProperty(PROPERTY_TRUST_ALL_CERTS, "true");
 		overrides.setProperty(PROPERTY_RELAX_HOSTNAME, "true");
-		BlobStoreContext context = contextFactory.createContext("aws-s3",
-				properties.getProperty("s3.accessid"),
-				properties.getProperty("s3.accesskey"),
-				// null logging module to get rid of nasty warnings using Swift...
-				ImmutableSet.<Module> of(new EnterpriseConfigurationModule(), new NullLoggingModule()),
-				overrides);
-		return context;
+        return ContextBuilder.newBuilder("aws-s3")
+                .credentials(properties.getProperty("s3.accessid"), properties.getProperty("s3.accesskey"))
+                .modules(Lists.newArrayList(new EnterpriseConfigurationModule(), new NullLoggingModule()))
+                .overrides(overrides)
+                .buildView(BlobStoreContext.class);
 	}
 
 	private static BlobStoreContext createSwiftBlobStore(DataSource ds) {
 		Properties overrides = new Properties();
-		String endpoint = ds.getResourceUrl().replace("swift", "https");
+		String endpoint = ds.getResourceUrl().replace("swift", "http");
 		overrides.setProperty(PROPERTY_ENDPOINT, endpoint);
 		overrides.setProperty(PROPERTY_TRUST_ALL_CERTS, "true");
 		overrides.setProperty(PROPERTY_RELAX_HOSTNAME, "true");
-		return contextFactory.createContext("swift",
-				ds.getUsername(),
-				ds.getPassword(),
-				// null logging module to get rid of nasty warnings using Swift...
-				ImmutableSet.<Module> of(new EnterpriseConfigurationModule(), new NullLoggingModule()),
-				overrides);
+		return ContextBuilder.newBuilder("swift")
+                .endpoint(endpoint)
+                .credentials(ds.getUsername(), ds.getPassword())
+                .modules(Lists.newArrayList(new EnterpriseConfigurationModule(), new NullLoggingModule()))
+                .overrides(overrides)
+                .buildView(BlobStoreContext.class);
 	}
 }

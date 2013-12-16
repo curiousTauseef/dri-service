@@ -34,7 +34,7 @@ public class Notifications {
 
     public static Notification internalError(Exception e) {
         String recipient = "kstyrc@gmail.com";
-        String subject = "DRI service error, please investigate";
+        String subject = "[DRI] DRI service error, please investigate";
         String message = format("Message: [%s]%nStackTrace:%n%s", e.getMessage(), ExceptionUtils.getStackTrace(e));
         return new Notification(
                 Notification.Type.ADMIN,
