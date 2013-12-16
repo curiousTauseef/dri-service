@@ -9,12 +9,6 @@ public class GuiceServletConfig extends GuiceServletContextListener {
 
 	@Override
 	protected Injector getInjector() {
-        // Certificate truststore
-        System.setProperty("javax.net.ssl.trustStore",
-                PropertiesProvider.getProperties().getProperty("javax.net.ssl.trustStore"));
-        System.setProperty("javax.net.ssl.trustStorePassword",
-                PropertiesProvider.getProperties().getProperty("javax.net.ssl.trustStorePassword"));
-
 		return Guice.createInjector(new DRIGuiceServletModuleConfiguration());
 	}
 }
